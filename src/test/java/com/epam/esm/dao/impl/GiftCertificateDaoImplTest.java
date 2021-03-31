@@ -1,8 +1,7 @@
-package com.epam.esm.dao.database;
+package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.PersistentException;
+import com.epam.esm.dao.GiftCertificateDao;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,13 +21,11 @@ class GiftCertificateDaoImplTest {
 
     @Before
     public void setUp() {
-        // Создадим базу данных для тестирования
         embeddedDatabase = new EmbeddedDatabaseBuilder()
-                .addDefaultScripts()// Добавляем скрипты schema.sql и data.sql
-                .setType(EmbeddedDatabaseType.H2)// Используем базу H2
+                .addDefaultScripts()
+                .setType(EmbeddedDatabaseType.H2)
                 .build();
 
-        // Создадим JdbcTemplate
         jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 
         giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate);
@@ -36,13 +33,11 @@ class GiftCertificateDaoImplTest {
 
     @Test
     public void testReadAll() throws  DaoException {
-        // Создадим базу данных для тестирования
         embeddedDatabase = new EmbeddedDatabaseBuilder()
-                .addDefaultScripts()// Добавляем скрипты schema.sql и data.sql
-                .setType(EmbeddedDatabaseType.H2)// Используем базу H2
+                .addDefaultScripts()
+                .setType(EmbeddedDatabaseType.H2)
                 .build();
 
-        // Создадим JdbcTemplate
         jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 
         giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate);

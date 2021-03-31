@@ -1,8 +1,8 @@
-package com.epam.esm.dao.database;
+package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
+import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.PersistentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,9 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,9 +1,8 @@
-package com.epam.esm.dao.database;
+package com.epam.esm.dao;
 
 import com.epam.esm.dao.Dao;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.PersistentException;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
