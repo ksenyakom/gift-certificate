@@ -17,17 +17,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-
+//@Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private JdbcTemplate jdbcTemplate;
 
-
+ //   @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     private static final String CREATE
-            = "insert into gift_certificate (`name`, `description`, `price`, `duration`, `create_date`,`is_active`) values(?,?,?,?,?,?)";
+            = "insert into gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
 
     @Override
     public Integer create(GiftCertificate entity) throws DaoException {
