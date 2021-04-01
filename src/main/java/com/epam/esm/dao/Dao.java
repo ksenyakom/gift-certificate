@@ -1,10 +1,7 @@
 package com.epam.esm.dao;
 
 
-import com.epam.esm.entity.Entity;
-import com.epam.esm.exception.PersistentException;
-
-import java.util.List;
+import com.epam.esm.model.Entity;
 
 public interface Dao<Type extends Entity> {
 	Integer create(Type entity) throws DaoException;

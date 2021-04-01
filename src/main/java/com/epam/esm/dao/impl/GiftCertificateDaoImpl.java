@@ -2,7 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-@Component
-public class GiftCertificateDaoImpl implements GiftCertificateDao {
-    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
+public class GiftCertificateDaoImpl implements GiftCertificateDao {
+    private JdbcTemplate jdbcTemplate;
+
+
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
