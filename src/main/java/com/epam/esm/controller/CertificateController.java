@@ -69,12 +69,13 @@ public class CertificateController {
     }
 
     @PatchMapping("/{id}")
-    public void update(@ModelAttribute("certificate") GiftCertificate certificate, @PathVariable("id") int id) {
+    public String update(@ModelAttribute("certificate") GiftCertificate certificate, @PathVariable("id") int id) {
         try {
             giftCertificateService.save(certificate);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
+        return "redirect:/certificates";
     }
 
     @DeleteMapping("/{id}")

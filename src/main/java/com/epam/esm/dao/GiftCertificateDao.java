@@ -22,6 +22,6 @@ public interface GiftCertificateDao extends Dao<GiftCertificate> {
         return giftCertificate;
     };
 
-    List<GiftCertificate> readAll() throws DaoException;
+    List<GiftCertificate> readAll() ;
 
 }

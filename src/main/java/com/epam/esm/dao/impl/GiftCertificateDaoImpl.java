@@ -17,20 +17,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-//@Component
+@Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private JdbcTemplate jdbcTemplate;
 
- //   @Autowired
+    @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private static final String CREATE
-            = "insert into gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
+    private static final String CREATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
+    private static final String READ = "SELECT * FROM gift_certificate WHERE id = ?";
+    private static final String UPDATE = "UPDATE gift_certificate SET name = ?2, description = ?3 WHERE id = ?1";
+    private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ?";
+    private static final String READ_ALL = "SELECT * FROM gift_certificate";
 
     @Override
-    public Integer create(GiftCertificate entity) throws DaoException {
+    public Integer create(GiftCertificate entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -56,29 +59,29 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
 
     @Override
-    public GiftCertificate read(Integer id) throws DaoException {
+    public GiftCertificate read(Integer id)  {
         GiftCertificate giftCertificate = null;
-        try {
-            giftCertificate = jdbcTemplate.queryForObject("select * from gift_certificate where id = ?", ROW_MAPPER, id);
-        } catch (DataAccessException e) {
-            throw new DaoException(e.getMessage(), e);
-        }
+ //       try {
+            giftCertificate = jdbcTemplate.queryForObject(READ, ROW_MAPPER, id);
+//        } catch (DataAccessException e) {
+//            throw new DaoException(e.getMessage(), e);
+//        }
         return giftCertificate;
     }
 
     @Override
-    public void update(GiftCertificate entity) throws DaoException {
+    public void update(GiftCertificate entity) {
         //TODO add all fields
-        jdbcTemplate.update("update gift_certificate set name = ?2, description = ?3 where id = ?1", entity.getId(), entity.getName(), entity.getDescription());
+        jdbcTemplate.update(UPDATE, entity.getId(), entity.getName(), entity.getDescription());
     }
 
     @Override
-    public void delete(Integer id) throws DaoException {
-        jdbcTemplate.update("update gift_certificate set is_active = false where id = ?", id);
+    public void delete(Integer id) {
+        jdbcTemplate.update(DELETE, id);
     }
 
     @Override
-    public List<GiftCertificate> readAll() throws DaoException {
-        return jdbcTemplate.query("select * from gift_certificate", ROW_MAPPER);
+    public List<GiftCertificate> readAll()  {
+        return jdbcTemplate.query(READ_ALL, ROW_MAPPER);
     }
 }
