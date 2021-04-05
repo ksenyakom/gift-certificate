@@ -9,7 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.HashMap;
+import java.util.List;
+
+@RestController
 @RequestMapping("/certificates")
 public class CertificateController {
 
@@ -21,23 +24,16 @@ public class CertificateController {
     }
 
     @GetMapping()
-    public String index(Model model) {
-        try {
-            model.addAttribute("certificates", giftCertificateService.findAll());
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-        return "certificates/index";
+    public List<GiftCertificate> index(Model model) {
+      //  return "certificates/index";
+        return giftCertificateService.findAll();
+
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model) {
-        try {
-            model.addAttribute("certificate", giftCertificateService.findById(id));
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-        return "certificates/show";
+    public GiftCertificate show(@PathVariable("id") int id, Model model) {
+
+        return giftCertificateService.findById(id);
     }
 
     @GetMapping("/new")
@@ -49,42 +45,32 @@ public class CertificateController {
 
     @PostMapping()
     public String create(@ModelAttribute("certificate") GiftCertificate certificate) {
-        try {
             giftCertificateService.save(certificate);
 
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
         return "redirect:/certificates";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        try {
             model.addAttribute("certificate", giftCertificateService.findById(id));
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
         return "certificates/edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("certificate") GiftCertificate certificate, @PathVariable("id") int id) {
-        try {
             giftCertificateService.save(certificate);
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
         return "redirect:/certificates";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        try {
             giftCertificateService.delete(id);
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
         return "redirect:/certificates";
     }
+
+//    @ExceptionHandler(ServiceException.class)
+//    public ServiceException someError(ServiceException e) {
+//
+//        return
+//
 }

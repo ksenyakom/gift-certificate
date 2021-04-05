@@ -45,7 +45,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             ps.setInt(4, entity.getDuration());
 //TODO remove from here
             TimeZone tz = TimeZone.getTimeZone("UTC");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             df.setTimeZone(tz);
             String nowAsISO = df.format(new Date());
 
@@ -61,7 +61,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public GiftCertificate read(Integer id)  {
         GiftCertificate giftCertificate = null;
- //       try {
             giftCertificate = jdbcTemplate.queryForObject(READ, ROW_MAPPER, id);
 //        } catch (DataAccessException e) {
 //            throw new DaoException(e.getMessage(), e);

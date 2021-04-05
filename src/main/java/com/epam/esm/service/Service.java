@@ -5,12 +5,12 @@ import com.epam.esm.model.Entity;
 import java.util.List;
 
 public interface Service<T extends Entity> {
-    T findById(Integer id) throws ServiceException;
+    T findById(Integer id) ;
 
-    List<T> findAll() throws ServiceException;
+    List<T> findAll() ;
 
-    void save(T entity) throws ServiceException;
+    void save(T entity) ;
 
-    void delete(Integer id) throws ServiceException;
+    void delete(Integer id) ;
 
 }
