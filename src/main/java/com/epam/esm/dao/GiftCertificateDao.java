@@ -16,9 +16,9 @@ public interface GiftCertificateDao extends Dao<GiftCertificate> {
         //TODO add all fields
 //        giftCertificate.setCreateDate(resultSet.getTimestamp("create_date"));
 //        giftCertificate.setLastUpdateDate(resultSet.getTimestamp("last_update_date"));
-//        giftCertificate.setPrice();
-//        giftCertificate.setDuration();
-//        giftCertificate.setIsActive();
+        giftCertificate.setPrice(resultSet.getBigDecimal("price"));
+        giftCertificate.setDuration(resultSet.getInt("duration"));
+        giftCertificate.setIsActive(resultSet.getBoolean("is_active"));
         return giftCertificate;
     };
 

@@ -28,17 +28,17 @@ public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON);
-    }
-
-    @Bean
-    public ViewResolver chViewResolver(ContentNegotiationManager cnm) {
-        ContentNegotiatingViewResolver cnvr = new ContentNegotiatingViewResolver();
-        cnvr.setContentNegotiationManager(cnm);
-        return cnvr;
-    }
+//    @Override
+//    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+//        configurer.defaultContentType(MediaType.APPLICATION_JSON);
+//    }
+//
+//    @Bean
+//    public ViewResolver chViewResolver(ContentNegotiationManager cnm) {
+//        ContentNegotiatingViewResolver cnvr = new ContentNegotiatingViewResolver();
+//        cnvr.setContentNegotiationManager(cnm);
+//        return cnvr;
+//    }
 
     @Autowired
     public SpringConfig(ApplicationContext applicationContext) {

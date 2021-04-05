@@ -10,7 +10,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,7 +30,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String CREATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
     private static final String READ = "SELECT * FROM gift_certificate WHERE id = ?";
-    private static final String UPDATE = "UPDATE gift_certificate SET name = ?2, description = ?3 WHERE id = ?1";
+    private static final String UPDATE = "UPDATE gift_certificate SET name = ?, description = ? WHERE id = ?";
     private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ?";
     private static final String READ_ALL = "SELECT * FROM gift_certificate";
 
@@ -38,14 +40,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(CREATE);
+                    .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, entity.getName());
             ps.setString(2, entity.getDescription());
             ps.setBigDecimal(3, entity.getPrice());
             ps.setInt(4, entity.getDuration());
 //TODO remove from here
             TimeZone tz = TimeZone.getTimeZone("UTC");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             df.setTimeZone(tz);
             String nowAsISO = df.format(new Date());
 
@@ -54,7 +56,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             return ps;
         }, keyHolder);
 
-        return (Integer) keyHolder.getKey();
+            return keyHolder.getKey().intValue();
     }
 
 
@@ -71,7 +73,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void update(GiftCertificate entity) {
         //TODO add all fields
-        jdbcTemplate.update(UPDATE, entity.getId(), entity.getName(), entity.getDescription());
+        jdbcTemplate.update(UPDATE, entity.getName(), entity.getDescription(), entity.getId());
     }
 
     @Override
