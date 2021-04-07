@@ -1,28 +1,32 @@
 package com.epam.esm.service;
 
 public class ServiceException extends Exception{
-    private int errorCode;
+    private String errorCode;
 
-    public int getErrorCode() {
+    public String getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(int errorCode) {
+    public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
     }
 
-    public ServiceException(int errorCode) {
+    public ServiceException(String errorCode) {
+        this.errorCode = errorCode;
     }
 
-    public ServiceException(String message,int errorCode) {
+    public ServiceException(String message,String errorCode) {
         super(message);
+        this.errorCode = errorCode;
     }
 
-    public ServiceException(String message, Throwable cause, int errorCode) {
+    public ServiceException(String message, String errorCode, Throwable cause) {
         super(message, cause);
+        this.errorCode = errorCode;
     }
 
-    public ServiceException(Throwable cause, int errorCode) {
+    public ServiceException(Throwable cause, String errorCode) {
         super(cause);
+        this.errorCode = errorCode;
     }
 }

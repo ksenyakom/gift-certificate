@@ -10,6 +10,15 @@ public class GiftCertificate extends Certificate {
     private LocalDateTime lastUpdateDate;
     private boolean isActive;
 
+    public GiftCertificate() {
+    }
+
+    public GiftCertificate(String name, String description, BigDecimal price, int duration) {
+        super(name, description);
+        this.price = price;
+        this.duration = duration;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }

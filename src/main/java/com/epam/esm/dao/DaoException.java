@@ -1,14 +1,27 @@
 package com.epam.esm.dao;
 
 public class DaoException extends Exception {
-    public DaoException() {
+    private String errorCode;
+
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public DaoException(String message) {
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public DaoException(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public DaoException(String message, String errorCode) {
         super(message);
+        this.errorCode = errorCode;
     }
 
-    public DaoException(String message, Throwable cause) {
+    public DaoException(String message, String errorCode, Throwable cause) {
         super(message, cause);
+        this.errorCode = errorCode;
     }
 }

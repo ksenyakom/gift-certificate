@@ -1,0 +1,5 @@
+01 - "Can not create new GiftCertificate"
+02 - "Can not read certificate"
+03 -"Can not update GiftCertificate (id = " + entity.id + ")."
+04 - "Can not delete GiftCertificate (id = " + id + ")."
+05 - "Can not read all GiftCertificates"

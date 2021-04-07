@@ -8,6 +8,14 @@ public abstract class Certificate extends Entity{
     private String description;
     private LocalDateTime createDate;
 
+    public Certificate() {
+    }
+
+    public Certificate(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }

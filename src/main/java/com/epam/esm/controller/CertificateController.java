@@ -4,8 +4,10 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,50 +25,34 @@ public class CertificateController {
     }
 
     @GetMapping()
-    public  @ResponseBody List<GiftCertificate> index() {
-       // throw new ServiceException("Some error",1234);
+    public List<GiftCertificate> index() throws ServiceException {
         return giftCertificateService.findAll();
-
     }
 
     @GetMapping("/{id}")
-    public GiftCertificate show(@PathVariable("id") int id) {
+    public GiftCertificate show(@PathVariable("id") int id) throws ServiceException {
         return giftCertificateService.findById(id);
     }
 
     @PostMapping()
-    public @ResponseBody List<GiftCertificate> create(@RequestBody GiftCertificate giftCertificate){
-            giftCertificateService.save(giftCertificate);
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<GiftCertificate> create(@RequestBody GiftCertificate giftCertificate) throws ServiceException {
+        giftCertificateService.save(giftCertificate);
+
         return giftCertificateService.findAll();
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody GiftCertificate update(@RequestBody GiftCertificate certificate, @PathVariable("id") int id) {
+    public GiftCertificate update(@RequestBody GiftCertificate certificate, @PathVariable("id") int id) throws ServiceException {
         certificate.setId(id);
         giftCertificateService.save(certificate);
         return giftCertificateService.findById(id);
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody List<GiftCertificate> delete(@PathVariable("id") int id) {
-            giftCertificateService.delete(id);
+    public List<GiftCertificate> delete(@PathVariable("id") int id) throws ServiceException {
+        giftCertificateService.delete(id);
         return giftCertificateService.findAll();
     }
-
-    @ExceptionHandler(ServiceException.class)
-    public @ResponseBody Map<String,String> someError(ServiceException e) {
-        Map<String,String> error = new HashMap<>();
-        error.put("errorMessage", e.getMessage());
-        error.put("errorCode", "" + e.getErrorCode());
-        return error;
-    }
-
-//    @ExceptionHandler(ResourceNotFoundException.class)
-//    public @ResponseBody Map<String,String> someError(ServiceException e) {
-//        Map<String,String> error = new HashMap<>();
-//        error.put("errorMessage", e.getMessage());
-//        error.put("errorCode", "" + e.getErrorCode());
-//        return error;
-//    }
 
 }
