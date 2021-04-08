@@ -5,7 +5,8 @@ values
 (2, 'hand care'),
 (3, 'hair care'),
 (4, 'sport'),
-(5, 'relax');
+(5, 'relax'),
+(6, 'to delete');
 
 
 insert into `gift_certificate`

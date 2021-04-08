@@ -47,14 +47,7 @@ class GiftCertificateDaoImplTest {
         embeddedDatabase.shutdown();
     }
 
-    @Test
-    void testReadAll() throws DaoException {
-        assertAll("Should read all lines",
-                () -> {
-                    assertNotNull(giftCertificateDao.readAll());
-                    assertEquals(3, giftCertificateDao.readAll().size());
-                });
-    }
+
 
     @ParameterizedTest
     @CsvSource({
@@ -92,8 +85,8 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void createException() {
-        GiftCertificate giftCertificate = new GiftCertificate();
-        assertThrows(DaoException.class, () -> giftCertificateDao.create(giftCertificate));
+        GiftCertificate emptyCertificate = new GiftCertificate();
+        assertThrows(DaoException.class, () -> giftCertificateDao.create(emptyCertificate));
     }
 
     @Test
@@ -138,5 +131,14 @@ class GiftCertificateDaoImplTest {
         GiftCertificate actual = giftCertificateDao.read(id);
 
         assertFalse(actual.isActive());
+    }
+
+    @Test
+    void testReadAll() throws DaoException {
+        assertAll("Should read all lines",
+                () -> {
+                    assertNotNull(giftCertificateDao.readAll());
+                    assertEquals(3, giftCertificateDao.readAll().size());
+                });
     }
 }
