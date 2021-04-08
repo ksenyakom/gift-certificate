@@ -1,5 +1,10 @@
 01 - "Can not create new GiftCertificate"
 02 - "Can not read certificate"
-03 -"Can not update GiftCertificate (id = " + entity.id + ")."
-04 - "Can not delete GiftCertificate (id = " + id + ")."
+03 - "Can not update GiftCertificate "
+04 - "Can not delete GiftCertificate "
 05 - "Can not read all GiftCertificates"
+06 - "Certificate not found"
+11 - "Can not create new Tag.
+12 - "Can not read Tag
+14 - "Can not delete Tag
+15 - Can not read all Tag

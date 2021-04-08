@@ -85,6 +85,12 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    void readException() {
+        int notExistingId = 100;
+        assertThrows(DaoException.class, () -> giftCertificateDao.read(notExistingId));
+    }
+
+    @Test
     void createException() {
         GiftCertificate giftCertificate = new GiftCertificate();
         assertThrows(DaoException.class, () -> giftCertificateDao.create(giftCertificate));

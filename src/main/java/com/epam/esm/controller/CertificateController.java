@@ -5,13 +5,9 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/certificates")
@@ -36,10 +32,10 @@ public class CertificateController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public List<GiftCertificate> create(@RequestBody GiftCertificate giftCertificate) throws ServiceException {
+    public GiftCertificate create(@RequestBody GiftCertificate giftCertificate) throws ServiceException {
         giftCertificateService.save(giftCertificate);
 
-        return giftCertificateService.findAll();
+        return giftCertificateService.findById(giftCertificate.getId());
     }
 
     @PatchMapping("/{id}")

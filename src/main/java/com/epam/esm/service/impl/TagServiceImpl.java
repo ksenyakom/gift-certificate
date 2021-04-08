@@ -1,10 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.DaoException;
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
+import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,43 +13,36 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 @Component
-public class GiftCertificateServiceImpl implements GiftCertificateService {
-    private GiftCertificateDao giftCertificateDao;
+public class TagServiceImpl implements TagService {
+    private TagDao tagDao;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao) {
-        this.giftCertificateDao = giftCertificateDao;
+    public TagServiceImpl (TagDao tagDao) {
+        this.tagDao = tagDao;
     }
-
     @Override
-    public GiftCertificate findById(Integer id) throws ServiceException {
+    public Tag findById(Integer id) throws ServiceException {
         try {
-            return giftCertificateDao.read(id);
+            return tagDao.read(id);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
 
     @Override
-    public List<GiftCertificate> findAll() throws ServiceException {
+    public List<Tag> findAll() throws ServiceException {
         try {
-            return giftCertificateDao.readAll();
+            return tagDao.readAll();
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
 
     @Override
-    public void save(GiftCertificate entity) throws ServiceException {
+    public void save(Tag entity) throws ServiceException {
         //TODO validator!!!
         try {
-            if (entity.getId() == null) {
-                entity.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
-                entity.setId(giftCertificateDao.create(entity));
-            } else {
-                entity.setLastUpdateDate(LocalDateTime.now(ZoneOffset.UTC));
-                giftCertificateDao.update(entity);
-            }
+                entity.setId(tagDao.create(entity));
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
@@ -58,7 +51,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void delete(Integer id) throws ServiceException {
         try {
-            giftCertificateDao.delete(id);
+            tagDao.delete(id);
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
