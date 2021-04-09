@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
 
@@ -62,15 +63,16 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    public BasicDataSource dataSource() {
+        BasicDataSource ds = new BasicDataSource();
         //TODO move to file
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/gift_db");
-        dataSource.setUsername("gift_user");
-        dataSource.setPassword("gift_password");
-
-        return dataSource;
+        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/gift_db");
+        ds.setUsername("gift_user");
+        ds.setPassword("gift_password");
+        ds.setInitialSize(5);
+        ds.setMaxTotal(10);
+        return ds;
     }
 
     @Bean
