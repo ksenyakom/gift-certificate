@@ -13,6 +13,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TagDaoImplTest {
@@ -75,5 +77,12 @@ class TagDaoImplTest {
                     assertNotNull(tagDao.readAll());
                     assertEquals(6, tagDao.readAll().size());
                 });
+    }
+
+    @Test
+    void readCertificateByTag() throws DaoException {
+        int id = 1;
+        List<GiftCertificate> certificates = tagDao.readCertificateByTag(id);
+        assertEquals(2, certificates.size());
     }
 }

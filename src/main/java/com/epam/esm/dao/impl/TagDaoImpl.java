@@ -31,6 +31,7 @@ public class TagDaoImpl implements TagDao {
     private static final String READ = "SELECT * FROM tag WHERE id = ?";
     private static final String DELETE = "DELETE FROM tag WHERE id = ?";
     private static final String READ_ALL = "SELECT * FROM tag";
+    private static final String READ_CERTIFICATES_BY_TAG  = "SELECT * FROM certificate_tag where tag_id = ?";
 
 
     @Override
@@ -80,6 +81,15 @@ public class TagDaoImpl implements TagDao {
             return jdbcTemplate.query(READ_ALL, new BeanPropertyRowMapper<>(Tag.class));
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all Tag", "15", e);
+        }
+    }
+
+    @Override
+    public List<GiftCertificate> readCertificateByTag(Integer id) throws DaoException {
+        try {
+            return jdbcTemplate.query(READ_CERTIFICATES_BY_TAG, new BeanPropertyRowMapper<>(GiftCertificate.class), id);
+        } catch (DataAccessException e) {
+            throw new DaoException("Can not read certificates by tag", "16", e);
         }
     }
 }

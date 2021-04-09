@@ -13,14 +13,14 @@ CREATE TABLE `gift_certificate`
 
 CREATE TABLE `tag`
 (
-    `id`        INTEGER AUTO_INCREMENT,
+    `id`        INTEGER NOT NULL AUTO_INCREMENT,
     `name`      VARCHAR(255) NOT NULL,
     CONSTRAINT PK_tag PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `certificate_tag`
 (
-    `id`                 INTEGER AUTO_INCREMENT,
+    `id`                 INTEGER NOT NULL AUTO_INCREMENT,
     `certificate_id`     INTEGER,
     `tag_id`             INTEGER,
     CONSTRAINT PK_certificate_tag PRIMARY KEY (`id`),

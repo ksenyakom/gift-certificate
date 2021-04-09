@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface TagDao extends Dao<Tag>{
     List<Tag> readAll() throws DaoException;
+    List<GiftCertificate> readCertificateByTag(Integer id) throws DaoException;
 
 }

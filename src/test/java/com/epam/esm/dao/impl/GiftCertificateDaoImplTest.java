@@ -6,7 +6,6 @@ import com.epam.esm.model.GiftCertificate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,7 +15,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -71,7 +69,7 @@ class GiftCertificateDaoImplTest {
                     assertEquals(0, giftCertificate.getPrice().compareTo(actual.getPrice()));
                     assertEquals(giftCertificate.getDuration(), actual.getDuration());
                     assertEquals(localDateTime,  actual.getCreateDate());
-                    assertTrue(actual.isActive());
+                    assertTrue(actual.getIsActive());
                     assertNull(actual.getLastUpdateDate());
                 });
         giftCertificateDao.delete(id);
@@ -112,7 +110,7 @@ class GiftCertificateDaoImplTest {
                     assertEquals(giftCertificate.getCreateDate(), actual.getCreateDate());
                     assertNotNull(actual.getLastUpdateDate());
                     assertEquals(giftCertificate.getLastUpdateDate(), actual.getLastUpdateDate());
-                    assertTrue(actual.isActive());
+                    assertTrue(actual.getIsActive());
                 });
     }
 
@@ -130,7 +128,7 @@ class GiftCertificateDaoImplTest {
         giftCertificateDao.delete(id);
         GiftCertificate actual = giftCertificateDao.read(id);
 
-        assertFalse(actual.isActive());
+        assertFalse(actual.getIsActive());
     }
 
     @Test

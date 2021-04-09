@@ -2,6 +2,7 @@ package com.epam.esm.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class GiftCertificate extends Certificate {
@@ -9,6 +10,7 @@ public class GiftCertificate extends Certificate {
     private int duration;
     private LocalDateTime lastUpdateDate;
     private boolean isActive;
+    private List<Tag> tags;
 
     public GiftCertificate() {
     }
@@ -19,6 +21,13 @@ public class GiftCertificate extends Certificate {
         this.duration = duration;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
     public BigDecimal getPrice() {
         return price;
     }
@@ -43,12 +52,12 @@ public class GiftCertificate extends Certificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(boolean active) {
-        this.isActive = active;
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     @Override
