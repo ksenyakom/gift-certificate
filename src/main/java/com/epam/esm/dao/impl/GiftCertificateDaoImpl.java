@@ -4,6 +4,8 @@ import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
+    private static Logger logger = LogManager.getLogger(GiftCertificateDaoImpl.class);
+
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -33,39 +37,46 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private final static String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ?";
     private final static String READ_ALL = "SELECT * FROM gift_certificate";
 
-    private final static String READ_TAG_BY_CERTIFICATE = "SELECT * FROM certificate_tag WHERE certificate_id = ?";
+    private final static String READ_TAG_BY_CERTIFICATE = "SELECT tag_id as id FROM certificate_tag WHERE certificate_id = ?";
     private final static String CREATE_CERTIFICATE_TAG = "INSERT INTO  certificate_tag (certificate_id, tag_id) values (?,?)";
     private final static String DELETE_CERTIFICATE_TAG = "DELETE FROM certificate_tag WHERE certificate_id = ? AND tag_id = ?";
     private final static String ADD_CERTIFICATE_TAG = "INSERT INTO certificate_tag (certificate_id, tag_id) VALUES (?,?)";
 
     @Override
-    public Integer create(GiftCertificate entity) throws DaoException {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
+    public Integer create(GiftCertificate certificate) throws DaoException {
         try {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection
-                        .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, entity.getName());
-                ps.setString(2, entity.getDescription());
-                ps.setBigDecimal(3, entity.getPrice());
-                ps.setInt(4, entity.getDuration());
-                LocalDateTime createDate = entity.getCreateDate();
-                ps.setString(5, createDate == null ? null : createDate.toString());
-                ps.setBoolean(6, true);
-                return ps;
-            }, keyHolder);
+            Integer certificateId = createCertificate(certificate);
+            createCertificateTag(certificateId, certificate);
+            logger.debug("New certificate created with id={}", certificateId);
+            return certificateId;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not create new GiftCertificate. Name = " + entity.getName(), "01", e);
+            throw new DaoException("Can not create new GiftCertificate. Name = " + certificate.getName(), "01", e);
         }
+    }
 
-        Integer certificateId = keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
-        if (certificateId != null && entity.getTags() != null) {
-            for (Tag tag : entity.getTags()) {
+    private Integer createCertificate(GiftCertificate certificate) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, certificate.getName());
+            ps.setString(2, certificate.getDescription());
+            ps.setBigDecimal(3, certificate.getPrice());
+            ps.setInt(4, certificate.getDuration());
+            LocalDateTime createDate = certificate.getCreateDate();
+            ps.setString(5, createDate == null ? null : createDate.toString());
+            ps.setBoolean(6, true);
+            return ps;
+        }, keyHolder);
+        return keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
+    }
+
+    private void createCertificateTag(Integer certificateId, GiftCertificate certificate) {
+        if (certificateId != null && certificate.getTags() != null) {
+            for (Tag tag : certificate.getTags()) {
                 jdbcTemplate.update(CREATE_CERTIFICATE_TAG, certificateId, tag.getId());
             }
         }
-        return certificateId;
     }
 
     @Override
@@ -84,6 +95,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             jdbcTemplate.update(UPDATE, certificate.getName(), certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(), certificate.getId());
             updateTags(certificate);
+            logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (DataAccessException e) {
             throw new DaoException("Can not update GiftCertificate (id = " + certificate.getId() + ").", "03", e);
         }
@@ -93,6 +105,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public void delete(Integer id) throws DaoException {
         try {
             jdbcTemplate.update(DELETE, id);
+            logger.debug("Certificate was deleted(isActive=false) with id={}", id);
         } catch (DataAccessException e) {
             throw new DaoException("Can not delete GiftCertificate (id = " + id + ").", "04", e);
         }

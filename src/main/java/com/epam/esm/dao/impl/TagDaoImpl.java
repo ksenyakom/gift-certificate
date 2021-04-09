@@ -1,9 +1,12 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.controller.ExceptionInterceptor;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -19,6 +22,8 @@ import java.util.List;
 
 @Component
 public class TagDaoImpl implements TagDao {
+    private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
+
 
     private JdbcTemplate jdbcTemplate;
 
@@ -29,27 +34,31 @@ public class TagDaoImpl implements TagDao {
 
     private static final String CREATE = "INSERT INTO tag (name) values(?)";
     private static final String READ = "SELECT * FROM tag WHERE id = ?";
+    private static final String READ_NAME = "SELECT name FROM tag WHERE id = ?";
     private static final String DELETE = "DELETE FROM tag WHERE id = ?";
     private static final String READ_ALL = "SELECT * FROM tag";
-    private static final String READ_CERTIFICATES_BY_TAG  = "SELECT * FROM certificate_tag where tag_id = ?";
+    private static final String READ_CERTIFICATES_BY_TAG = "SELECT * FROM certificate_tag where tag_id = ?";
 
 
     @Override
     public Integer create(Tag entity) throws DaoException {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
         try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection
                         .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, entity.getName());
                 return ps;
             }, keyHolder);
+
+            Integer id = keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
+            logger.debug("New tag created with id={}, name={}", id, entity.getName());
+
+            return id;
         } catch (DataAccessException e) {
             throw new DaoException("Can not create new Tag. Name = " + entity.getName(), "11", e);
         }
-
-        return keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
     }
 
     @Override
@@ -62,6 +71,16 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
+    public void read(Tag tag) throws DaoException {
+        try {
+            String name = jdbcTemplate.queryForObject(READ_NAME, String.class, tag.getId());
+            tag.setName(name);
+        } catch (DataAccessException e) {
+            throw new DaoException("Can not read Tag name (id = " + tag.getId() + ").", "17", e);
+        }
+    }
+
+    @Override
     public void update(Tag entity) throws DaoException {
         throw new UnsupportedOperationException();
     }
@@ -70,6 +89,7 @@ public class TagDaoImpl implements TagDao {
     public void delete(Integer id) throws DaoException {
         try {
             jdbcTemplate.update(DELETE, id);
+            logger.debug("Deleted tag with id={}", id);
         } catch (DataAccessException e) {
             throw new DaoException("Can not delete Tag (id = " + id + ").", "14", e);
         }
