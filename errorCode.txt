@@ -10,3 +10,5 @@
 15 - Can not read all Tag
 16 - Can not read certificates by tag
 17 - Can not read Tag name
+
+20 - validation failed

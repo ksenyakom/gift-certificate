@@ -53,8 +53,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public void save(GiftCertificate certificate) throws ServiceException {
-        //TODO validator!!!
-
         try {
             checkForNewTags(certificate.getTags());
             if (certificate.getId() == null) {

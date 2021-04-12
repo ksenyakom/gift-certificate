@@ -8,7 +8,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
-public interface GiftCertificateDao extends Dao<GiftCertificate> {
+public interface GiftCertificateDao {
 
     RowMapper<GiftCertificate> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {
         GiftCertificate giftCertificate = new GiftCertificate();
@@ -24,6 +24,14 @@ public interface GiftCertificateDao extends Dao<GiftCertificate> {
         giftCertificate.setIsActive(resultSet.getBoolean("is_active"));
         return giftCertificate;
     };
+
+    Integer create(GiftCertificate entity) throws DaoException;
+
+    GiftCertificate read(Integer id) throws DaoException;
+
+    void update(GiftCertificate entity) throws DaoException;
+
+    void delete(Integer id) throws DaoException;
 
     List<GiftCertificate> readAll() throws DaoException;
 

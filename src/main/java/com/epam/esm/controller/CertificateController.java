@@ -3,10 +3,13 @@ package com.epam.esm.controller;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
+import com.epam.esm.service.validator.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.validation.Validator;
 import java.util.List;
 
 @RestController
@@ -32,17 +35,29 @@ public class CertificateController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificate create(@RequestBody GiftCertificate giftCertificate) throws ServiceException {
-        giftCertificateService.save(giftCertificate);
+    public GiftCertificate create(@RequestBody GiftCertificate certificate, BindingResult result) throws ServiceException {
+        GiftCertificateValidator validator = new GiftCertificateValidator();
+        validator.validate(certificate, result);
+        if (result.hasErrors()) {
+            throw new ServiceException(result.getAllErrors().toString(), "20");
+        } else {
+            giftCertificateService.save(certificate);
+            return certificate;
+        }
 
-        return giftCertificateService.findById(giftCertificate.getId());
     }
 
     @PatchMapping("/{id}")
-    public GiftCertificate update(@RequestBody GiftCertificate certificate, @PathVariable("id") int id) throws ServiceException {
+    public GiftCertificate update(@RequestBody GiftCertificate certificate, BindingResult result, @PathVariable("id") int id) throws ServiceException {
         certificate.setId(id);
-        giftCertificateService.save(certificate);
-        return giftCertificateService.findById(id);
+        GiftCertificateValidator validator = new GiftCertificateValidator();
+        validator.validate(certificate, result);
+        if (result.hasErrors()) {
+            throw new ServiceException(result.getAllErrors().toString(), "20");
+        } else {
+            giftCertificateService.save(certificate);
+            return certificate;
+        }
     }
 
     @DeleteMapping("/{id}")
