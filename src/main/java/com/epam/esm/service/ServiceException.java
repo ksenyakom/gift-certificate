@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-public class ServiceException extends Exception{
+public class ServiceException extends RuntimeException {
     private String errorCode;
 
     public String getErrorCode() {

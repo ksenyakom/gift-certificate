@@ -23,14 +23,14 @@ public class GiftCertificateValidator implements Validator {
         if (certificate.getName() == null) {
             errors.rejectValue("name", "empty field");
         } else if (certificate.getName().length() < minValue || certificate.getName().length() > maxLength) {
-            errors.rejectValue("name", "invalid length");
+            errors.rejectValue("name", "invalid length", "Name: invalid length");
         }
 
         String description = certificate.getDescription();
         if (description == null) {
             errors.rejectValue("description", "empty field");
         } else if (description.isEmpty() || description.length() > maxLength) {
-            errors.rejectValue("description", "invalid length");
+            errors.rejectValue("description", "invalid length", "Description: empty field");
         }
 
         if (certificate.getDuration() <= 0) {
