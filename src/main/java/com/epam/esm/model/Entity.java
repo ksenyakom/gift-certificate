@@ -6,6 +6,13 @@ import java.util.Objects;
 public abstract class Entity implements Serializable {
     private Integer id;
 
+    public Entity() {
+    }
+
+    public Entity(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

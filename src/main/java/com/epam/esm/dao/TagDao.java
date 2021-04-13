@@ -13,8 +13,6 @@ public interface TagDao {
 
     void read(Tag tag) throws DaoException;
 
-    void update(Tag tag) throws DaoException;
-
     void delete(Integer id) throws DaoException;
 
     List<Tag> readAll() throws DaoException;

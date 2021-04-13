@@ -5,6 +5,14 @@ import java.util.Objects;
 public class Tag extends Entity{
     private String name;
 
+    public Tag() {
+    }
+
+    public Tag(Integer id , String name) {
+        super(id);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

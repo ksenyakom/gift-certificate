@@ -21,6 +21,10 @@ public class GiftCertificate extends Certificate {
         this.duration = duration;
     }
 
+    public GiftCertificate(Integer id) {
+        super(id);
+    }
+
     public List<Tag> getTags() {
         return tags;
     }

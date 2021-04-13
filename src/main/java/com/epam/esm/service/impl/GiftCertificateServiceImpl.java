@@ -68,9 +68,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void checkForNewTags(List<Tag> tags) throws DaoException {
-        for (Tag tag : tags) {
-            if (tag.getId() == null) {
-                tag.setId(tagDao.create(tag));
+        if (tags != null) {
+            for (Tag tag : tags) {
+                if (tag.getId() == null) {
+                    tag.setId(tagDao.create(tag));
+                }
             }
         }
     }
@@ -85,8 +87,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void readTagName(GiftCertificate certificate) throws DaoException {
-        for (Tag tag : certificate.getTags()) {
-            tagDao.read(tag);
+        if (certificate.getTags() != null) {
+            for (Tag tag : certificate.getTags()) {
+                tagDao.read(tag);
+            }
         }
     }
 

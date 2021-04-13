@@ -37,14 +37,14 @@ public class CertificateController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificate create(@RequestBody GiftCertificate certificate, BindingResult result)  {
+    public GiftCertificate create(@RequestBody GiftCertificate certificate, BindingResult result) {
         GiftCertificateValidator validator = new GiftCertificateValidator();
         validator.validate(certificate, result);
-        if (result.hasErrors()) {
-            throw new ServiceException(message(result), "20");
-        } else {
+        if (!result.hasErrors()) {
             giftCertificateService.save(certificate);
             return certificate;
+        } else {
+            throw new ServiceException(message(result), "20");
         }
 
     }
@@ -54,16 +54,16 @@ public class CertificateController {
         certificate.setId(id);
         GiftCertificateValidator validator = new GiftCertificateValidator();
         validator.validate(certificate, result);
-        if (result.hasErrors()) {
-            throw new ServiceException(result.getAllErrors().toString(), "20");
-        } else {
+        if (!result.hasErrors()) {
             giftCertificateService.save(certificate);
             return certificate;
+        } else {
+            throw new ServiceException(message(result), "20");
         }
     }
 
     @DeleteMapping("/{id}")
-    public List<GiftCertificate> delete(@PathVariable("id") int id)  {
+    public List<GiftCertificate> delete(@PathVariable("id") int id) {
         giftCertificateService.delete(id);
         return giftCertificateService.findAll();
     }

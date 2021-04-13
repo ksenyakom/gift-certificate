@@ -81,11 +81,6 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void update(Tag entity) throws DaoException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void delete(Integer id) throws DaoException {
         try {
             jdbcTemplate.update(DELETE, id);

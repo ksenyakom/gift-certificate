@@ -16,6 +16,10 @@ public abstract class Certificate extends Entity{
         this.description = description;
     }
 
+    public Certificate(Integer id) {
+        super(id);
+    }
+
     public String getName() {
         return name;
     }
