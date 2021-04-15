@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,16 +31,20 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final static String CREATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
-    private final static String READ = "SELECT * FROM gift_certificate WHERE id = ?";
-    private final static String UPDATE = "UPDATE gift_certificate SET name = ?, description = ?,price = ?, duration = ?, last_update_date = ? WHERE id = ?";
-    private final static String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ?";
-    private final static String READ_ALL = "SELECT * FROM gift_certificate";
+    private static final String CREATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
+    private static final String READ = "SELECT * FROM gift_certificate WHERE id = ?";
+    private static final String UPDATE = "UPDATE gift_certificate SET name = ?, description = ?,price = ?, duration = ?, last_update_date = ? WHERE id = ?";
+    private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ?";
+    private static final String READ_ALL = "SELECT * FROM gift_certificate";
+    private static final String READ_BY_NAME = "SELECT * FROM gift_certificate WHERE name LIKE CONCAT('%', ?, '%')";
 
-    private final static String READ_TAG_BY_CERTIFICATE = "SELECT tag_id as id FROM certificate_tag WHERE certificate_id = ?";
-    private final static String CREATE_CERTIFICATE_TAG = "INSERT INTO  certificate_tag (certificate_id, tag_id) values (?,?)";
-    private final static String DELETE_CERTIFICATE_TAG = "DELETE FROM certificate_tag WHERE certificate_id = ? AND tag_id = ?";
-    private final static String ADD_CERTIFICATE_TAG = "INSERT INTO certificate_tag (certificate_id, tag_id) VALUES (?,?)";
+
+    private static final String READ_BY_TAGID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE t.tag_id = ?";
+
+    private static final String READ_TAG_BY_CERTIFICATE = "SELECT tag_id as id FROM certificate_tag WHERE certificate_id = ?";
+    private static final String CREATE_CERTIFICATE_TAG = "INSERT INTO  certificate_tag (certificate_id, tag_id) values (?,?)";
+    private static final String DELETE_CERTIFICATE_TAG = "DELETE FROM certificate_tag WHERE certificate_id = ? AND tag_id = ?";
+    private static final String ADD_CERTIFICATE_TAG = "INSERT INTO certificate_tag (certificate_id, tag_id) VALUES (?,?)";
 
     @Override
     public Integer create(GiftCertificate certificate) throws DaoException {
@@ -91,10 +95,53 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
+    public List<GiftCertificate> readAll() throws DaoException {
+        try {
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL, ROW_MAPPER);
+            if (!certificates.isEmpty()) {
+                readTagsForCertificate(certificates);
+            }
+            return certificates;
+        } catch (DataAccessException e) {
+            throw new DaoException("Can not read all GiftCertificates", "05", e);
+        }
+    }
+
+    @Override
+    public List<GiftCertificate> readByTags(List<Tag> tags) throws DaoException {
+        try {
+            List<GiftCertificate> certificates = new ArrayList<>();
+            for (Tag tag : tags) {
+                certificates.addAll( jdbcTemplate.query(READ_BY_TAGID, ROW_MAPPER, tag.getId()));
+            }
+            readTagsForCertificate(certificates);
+            return certificates;
+        } catch (DataAccessException e) {
+            throw new DaoException("Can not read certificates by tags (tag = " + tags.toString() + ").", "22", e);
+        }
+    }
+
+    @Override
+    public List<GiftCertificate> readByName(String name) throws DaoException {
+        try {
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ_BY_NAME, ROW_MAPPER, name);
+            readTagsForCertificate(certificates);
+            return certificates;
+        } catch (DataAccessException e) {
+            throw new DaoException("Can not read certificates by name (name = " + name + ").", "23", e);
+        }
+    }
+
+    @Override
+    public List<GiftCertificate> readByNameAnDTagName(String name, List<Tag> tags) throws DaoException {
+        return null;//TODO
+    }
+
+    @Override
     public void update(GiftCertificate certificate) throws DaoException {
         try {
             jdbcTemplate.update(UPDATE, certificate.getName(), certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(), certificate.getId());
-            updateTags(certificate);
+            updateCertificateTags(certificate);
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (DataAccessException e) {
             throw new DaoException("Can not update GiftCertificate (id = " + certificate.getId() + ").", "03", e);
@@ -111,30 +158,34 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
-    @Override
-    public List<GiftCertificate> readAll() throws DaoException {
-        try {
-            List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL, ROW_MAPPER);
-            if (!certificates.isEmpty()) {
-                for (GiftCertificate certificate : certificates) {
-                    readTagsForCertificate(certificate);
+
+    private void readTagsForCertificate(List<GiftCertificate> certificates) {
+        Map<Integer, Tag> tagMap = new HashMap<>();
+        Tag tag = null;
+        List<Tag> tags = null;
+
+        if (certificates != null) {
+            for (GiftCertificate certificate : certificates) {
+                List<Integer> tagsId = jdbcTemplate.queryForList(READ_TAG_BY_CERTIFICATE, Integer.class, certificate.getId());
+                tags = new ArrayList<>();
+                certificate.setTags(tags);
+                for (Integer id : tagsId) {
+                    tag = tagMap.merge(id, new Tag(id), (oldValue, newValue) -> oldValue);
+                    tags.add(tag);
                 }
             }
-            return certificates;
-        } catch (DataAccessException e) {
-            throw new DaoException("Can not read all GiftCertificates", "05", e);
         }
     }
 
     private void readTagsForCertificate(GiftCertificate certificate) {
         if (certificate != null) {
-            List<Tag> tags = jdbcTemplate.query(
-                    READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
+            List<Tag> tags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
             certificate.setTags(tags);
         }
     }
 
-    private void updateTags(GiftCertificate certificate) {
+
+    private void updateCertificateTags(GiftCertificate certificate) {
         if (certificate.getTags() != null) {
             List<Tag> newTagList = certificate.getTags();
             List<Tag> existingTags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());

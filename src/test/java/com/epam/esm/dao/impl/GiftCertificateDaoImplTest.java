@@ -3,6 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.Tag;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +48,6 @@ class GiftCertificateDaoImplTest {
     }
 
 
-
     @ParameterizedTest
     @CsvSource({
             "Visiting CosmoCaixa, Scientific museum in Barcelona, 49, 90"
@@ -68,11 +69,23 @@ class GiftCertificateDaoImplTest {
                     assertEquals(giftCertificate.getDescription(), actual.getDescription());
                     assertEquals(0, giftCertificate.getPrice().compareTo(actual.getPrice()));
                     assertEquals(giftCertificate.getDuration(), actual.getDuration());
-                    assertEquals(localDateTime,  actual.getCreateDate());
+                    assertEquals(localDateTime, actual.getCreateDate());
                     assertTrue(actual.getIsActive());
                     assertNull(actual.getLastUpdateDate());
                 });
         giftCertificateDao.delete(id);
+    }
+
+    @Test
+    void readByName() throws DaoException {
+        String name = "hair"; //TODO как сделать equals ignore case??
+        assertEquals(1, giftCertificateDao.readByName(name).size());
+    }
+
+    @Test
+    void readByTagName() throws DaoException {
+        String tagName = "beauty";
+        assertEquals(2, giftCertificateDao.readByTags(Collections.singletonList(new Tag(1))).size());
     }
 
     @Test

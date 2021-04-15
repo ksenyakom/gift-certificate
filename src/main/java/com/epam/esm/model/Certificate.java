@@ -1,11 +1,14 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public abstract class Certificate extends Entity{
     private String name;
     private String description;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createDate;
 
     public Certificate() {

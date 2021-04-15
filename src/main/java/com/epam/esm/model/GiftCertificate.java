@@ -1,5 +1,7 @@
 package com.epam.esm.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Objects;
 public class GiftCertificate extends Certificate {
     private BigDecimal price;
     private int duration;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime lastUpdateDate;
     private boolean isActive;
     private List<Tag> tags;

@@ -13,6 +13,10 @@ public class Tag extends Entity{
         this.name = name;
     }
 
+    public Tag(Integer tagId) {
+        super(tagId);
+    }
+
     public String getName() {
         return name;
     }

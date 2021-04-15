@@ -41,7 +41,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void save(Tag entity) throws ServiceException {
-        //TODO validator!!!
         try {
                 entity.setId(tagDao.create(entity));
         } catch (DaoException e) {

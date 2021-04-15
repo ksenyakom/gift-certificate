@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.Tag;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -35,4 +36,9 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> readAll() throws DaoException;
 
+    List<GiftCertificate> readByTags(List<Tag> tags) throws DaoException;
+
+    List<GiftCertificate> readByName(String name) throws DaoException;
+
+    List<GiftCertificate> readByNameAnDTagName(String name, List<Tag> tags) throws DaoException;
 }

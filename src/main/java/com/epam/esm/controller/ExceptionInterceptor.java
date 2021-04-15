@@ -1,14 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.Dto;
+import com.epam.esm.dto.JsonResult;
+import com.epam.esm.model.Entity;
+import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 public class ExceptionInterceptor {
@@ -16,10 +14,13 @@ public class ExceptionInterceptor {
 
     @ExceptionHandler(ServiceException.class)
     public @ResponseBody
-    Dto someError(ServiceException e) {
-        Dto dto = new Dto("fail",e.getMessage(), null );
+    JsonResult<? extends Entity> someError(ServiceException e) {
         logger.error("Error code:{}. Error message:{}",e.getErrorCode(),e.getMessage(), e.getCause());
-        return dto;
+        return new JsonResult.Builder<GiftCertificate>()
+                .withSuccess(false)
+                .withMessage(e.getMessage())
+                .withStatus(e.getErrorCode())
+                .build();
     }
 
 }

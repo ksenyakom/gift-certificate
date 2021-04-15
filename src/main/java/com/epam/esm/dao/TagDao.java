@@ -20,4 +20,5 @@ public interface TagDao {
     List<GiftCertificate> readCertificateByTag(Integer id) throws DaoException;
 
 
+    List<Tag> readByName(String tagName) throws DaoException;
 }

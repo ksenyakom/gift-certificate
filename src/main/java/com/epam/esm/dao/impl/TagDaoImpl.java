@@ -34,6 +34,7 @@ public class TagDaoImpl implements TagDao {
 
     private static final String CREATE = "INSERT INTO tag (name) values(?)";
     private static final String READ = "SELECT * FROM tag WHERE id = ?";
+    private static final String READ_BY_NAME = "SELECT * FROM tag WHERE name  LIKE CONCAT('%', ?, '%')";
     private static final String READ_NAME = "SELECT name FROM tag WHERE id = ?";
     private static final String DELETE = "DELETE FROM tag WHERE id = ?";
     private static final String READ_ALL = "SELECT * FROM tag";
@@ -105,6 +106,15 @@ public class TagDaoImpl implements TagDao {
             return jdbcTemplate.query(READ_CERTIFICATES_BY_TAG, new BeanPropertyRowMapper<>(GiftCertificate.class), id);
         } catch (DataAccessException e) {
             throw new DaoException("Can not read certificates by tag", "16", e);
+        }
+    }
+
+    @Override
+    public List<Tag> readByName(String tagName) throws DaoException {
+        try {
+            return jdbcTemplate.query(READ_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tagName);
+        } catch (DataAccessException e) {
+            throw new DaoException("No tags with name =" + tagName, "21", e);
         }
     }
 }

@@ -85,4 +85,11 @@ class TagDaoImplTest {
         List<GiftCertificate> certificates = tagDao.readCertificateByTag(id);
         assertEquals(2, certificates.size());
     }
+
+    @Test
+    void readByName() throws DaoException {
+        String tagName ="care";
+        List<Tag> tags = tagDao.readByName(tagName);
+        assertEquals(2, tags.size());
+    }
 }
