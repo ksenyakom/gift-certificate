@@ -33,8 +33,8 @@ public class CertificateController {
     ApplicationContext context;
 
     @GetMapping()
-    public List<GiftCertificate> index() {
-        return giftCertificateService.findAll();
+    public JsonResult<GiftCertificate> index() {
+        return  giftCertificateFacade.getAllCertificates();
     }
 
     @GetMapping("/{id}")

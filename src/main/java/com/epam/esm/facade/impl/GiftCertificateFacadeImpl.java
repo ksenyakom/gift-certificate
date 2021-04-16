@@ -51,4 +51,13 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
                 .withResult(certificateList)
                 .build();
     }
+
+    @Override
+    public JsonResult<GiftCertificate> getAllCertificates() {
+        List<GiftCertificate> certificates = giftCertificateService.findAll();
+        return new JsonResult.Builder<GiftCertificate>()
+                .withSuccess(true)
+                .withResult(certificates)
+                .build();
+    }
 }

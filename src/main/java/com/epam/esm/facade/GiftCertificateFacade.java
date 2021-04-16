@@ -12,5 +12,7 @@ public interface GiftCertificateFacade {
     JsonResult<GiftCertificate> delete(int id);
 
     JsonResult<GiftCertificate> search(String name, String tagName);
+
+    JsonResult<GiftCertificate> getAllCertificates();
 }
 

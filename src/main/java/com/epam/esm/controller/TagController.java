@@ -1,5 +1,7 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.JsonResult;
+import com.epam.esm.facade.TagFacade;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;
@@ -14,41 +16,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/tags")
 public class TagController {
-
-    private final TagService tagService;
-
     @Autowired
-    public TagController(TagService tagService) {
-        this.tagService = tagService;
-    }
+    private TagService tagService;
+    @Autowired
+    private TagFacade tagFacade;
+
+
 
     @GetMapping()
-    public List<Tag> index() throws ServiceException {
-        return tagService.findAll();
+    public JsonResult<Tag> index() throws ServiceException {
+        return tagFacade.getAllTags();
+
     }
 
     @GetMapping("/{id}")
-    public Tag show(@PathVariable("id") int id) throws ServiceException {
-        return tagService.findById(id);
+    public JsonResult<Tag> show(@PathVariable("id") int id) throws ServiceException {
+        return tagFacade.getTag(id);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Tag create(@RequestBody Tag tag, BindingResult result) throws ServiceException {
+    public JsonResult<Tag> create(@RequestBody Tag tag, BindingResult result) throws ServiceException {
         TagValidator validator = new TagValidator();
         validator.validate(tag,result);
         if (!result.hasErrors()) {
-            tagService.save(tag);
-            return tag;
+            return tagFacade.save(tag);
         } else {
             throw new ServiceException(message(result), "20");
         }
     }
 
     @DeleteMapping("/{id}")
-    public List<Tag> delete(@PathVariable("id") int id) throws ServiceException {
-        tagService.delete(id);
-        return tagService.findAll();
+    public JsonResult<Tag> delete(@PathVariable("id") int id) throws ServiceException {
+        return tagFacade.delete(id);
     }
 
     private String message(BindingResult result) {
