@@ -90,6 +90,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         try {
             List<Tag> tags = tagDao.readByName(tagName);
             List<GiftCertificate> certificates = giftCertificateDao.readByTags(tags);
+            readTagNames(certificates);
             return certificates;
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
@@ -99,24 +100,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificate> findByName(String name) {
         try {
-
             List<GiftCertificate> certificates = giftCertificateDao.readByName(name);
-
-        return certificates;
-    } catch (DaoException e) {
-        throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
-    }
+            readTagNames(certificates);
+            return certificates;
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+        }
     }
 
     @Override
     public List<GiftCertificate> findByNameAndTagName(String name, String tagName) {
         try {
             List<Tag> tags = tagDao.readByName(tagName);
-            List<GiftCertificate> certificates = giftCertificateDao.readByNameAnDTagName(name,tags);
-
-        return certificates;
-    } catch (DaoException e) {
-        throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
+            List<GiftCertificate> certificates = giftCertificateDao.readByNameAndTagName(name, tags);
+            readTagNames(certificates);
+            return certificates;
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }
     }
 
@@ -129,10 +129,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void readTagNames(List<GiftCertificate> certificates) throws DaoException {
-        List<Tag> tags =  certificates.stream()
+        List<Tag> tags = certificates.stream()
                 .flatMap(certificate -> certificate.getTags().stream())
                 .distinct()
                 .collect(Collectors.toList());
-            readTagName(tags);
+        readTagName(tags);
     }
 }

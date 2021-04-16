@@ -1,11 +1,9 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
-import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.validator.TagValidator;
+import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;

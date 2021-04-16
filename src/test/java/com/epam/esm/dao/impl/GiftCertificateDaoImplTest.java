@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.model.Certificate;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.junit.jupiter.api.AfterAll;
@@ -18,7 +19,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +81,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void readByName() throws DaoException {
-        String name = "hair"; //TODO как сделать equals ignore case??
+        String name = "cut"; //TODO как сделать equals ignore case??
         assertEquals(1, giftCertificateDao.readByName(name).size());
     }
 

@@ -1,6 +1,5 @@
 package com.epam.esm.service.sort;
 
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.GiftCertificate;
 
 import java.util.Comparator;
@@ -24,22 +23,37 @@ public class SortCertificateImpl implements SortCertificate {
     private Comparator<GiftCertificate> getComparator() {
         Comparator<GiftCertificate> comparator = null;
         if (sortByName != null) {
-            comparator = Comparator.comparing(GiftCertificate::getName);
-            if (sortByName.equalsIgnoreCase("desc")) {
-                comparator = comparator.reversed();
-            }
+            comparator = addSortByNameComparison();
+        }
+        if (sortByDate != null) {
+            comparator = addSortByDateComparison(comparator);
         }
 
-        if (sortByDate != null) {
-            if (comparator == null) {
-                comparator = Comparator.comparing(GiftCertificate::getCreateDate);
-            } else {
-                comparator = comparator.thenComparing(GiftCertificate::getCreateDate);
-            }
+        return comparator;
+    }
+
+    private Comparator<GiftCertificate> addSortByNameComparison() {
+        Comparator<GiftCertificate> comparator = Comparator.comparing(GiftCertificate::getName);
+        if (sortByName.equalsIgnoreCase("desc")) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
+    }
+
+    private Comparator<GiftCertificate> addSortByDateComparison(Comparator<GiftCertificate> comparator) {
+        if (comparator == null) {
+            comparator = Comparator.comparing(GiftCertificate::getCreateDate);
             if (sortByDate.equalsIgnoreCase("desc")) {
                 comparator = comparator.reversed();
             }
+        } else {
+            if (sortByDate.equalsIgnoreCase("desc")) {
+                comparator = comparator.thenComparing(Comparator.comparing(GiftCertificate::getCreateDate).reversed());
+            } else {
+                comparator = comparator.thenComparing(GiftCertificate::getCreateDate);
+            }
         }
+
         return comparator;
     }
 }

@@ -1,6 +1,5 @@
-package com.epam.esm.service.validator;
+package com.epam.esm.validator;
 
-import com.epam.esm.model.Entity;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.springframework.validation.Errors;

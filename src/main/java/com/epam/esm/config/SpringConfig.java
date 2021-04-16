@@ -65,7 +65,6 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public BasicDataSource dataSource() {
         BasicDataSource ds = new BasicDataSource();
-        //TODO move to file
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
         ds.setUrl("jdbc:mysql://localhost:3306/gift_db");
         ds.setUsername("gift_user");

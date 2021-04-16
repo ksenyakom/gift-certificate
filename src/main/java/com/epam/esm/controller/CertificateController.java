@@ -2,25 +2,24 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
-import com.epam.esm.facade.impl.GiftCertificateFacadeImpl;
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.model.SearchParams;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.sort.SortCertificate;
 import com.epam.esm.service.sort.SortCertificateImpl;
-import com.epam.esm.service.validator.GiftCertificateValidator;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.epam.esm.validator.GiftCertificateValidator;
+import com.epam.esm.validator.SearchValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.validation.Validator;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/certificates")
@@ -62,7 +61,7 @@ public class CertificateController {
         GiftCertificateValidator validator = new GiftCertificateValidator();
         validator.validate(certificate, result);
         if (!result.hasErrors()) {
-            return giftCertificateFacade.save(certificate);
+            return giftCertificateFacade.getCertificate(certificate.getId());
         } else {
             throw new ServiceException(message(result), "20");
         }
@@ -74,17 +73,27 @@ public class CertificateController {
     }
 
     @GetMapping("/search")
-    public JsonResult<GiftCertificate> search(@RequestParam(value = "name", required = false) String name,
-                                              @RequestParam(value = "tagName", required = false) String tagName,
-                                              @RequestParam(value = "sortByDate", required = false) String sortByDate,
-                                              @RequestParam(value = "sortByName", required = false) String sortByName) {
-        //TODO validator??
-        JsonResult<GiftCertificate> jsonResult= giftCertificateFacade.search(name, tagName);
-        if (sortByName != null || sortByDate != null) {
-            SortCertificate sortCertificate = new SortCertificateImpl(sortByName, sortByDate);
-            sortCertificate.sort(jsonResult.getResult());
+    public JsonResult<GiftCertificate> search(@ModelAttribute SearchParams searchParams,
+                                              BindingResult result) {
+        SearchValidator searchValidator = new SearchValidator();
+        searchValidator.validate(searchParams, result);
+
+        if (!result.hasErrors()) {
+            JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(
+                    searchParams.getName(), searchParams.getTagName());
+
+            if (jsonResult.getResult() != null) {
+                String sortByName = searchParams.getSortByName();
+                String sortByDate = searchParams.getSortByDate();
+                if ( sortByName != null || sortByDate != null) {
+                    SortCertificate sortCertificate = new SortCertificateImpl(sortByName, sortByDate);
+                    sortCertificate.sort(jsonResult.getResult());
+                }
+            }
+            return jsonResult;
+        } else {
+            throw new ServiceException(message(result), "24");
         }
-        return jsonResult;
     }
 
 

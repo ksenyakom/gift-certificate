@@ -40,5 +40,5 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> readByName(String name) throws DaoException;
 
-    List<GiftCertificate> readByNameAnDTagName(String name, List<Tag> tags) throws DaoException;
+    List<GiftCertificate> readByNameAndTagName(String name, List<Tag> tags) throws DaoException;
 }
