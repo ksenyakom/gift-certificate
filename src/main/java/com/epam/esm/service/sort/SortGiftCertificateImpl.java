@@ -5,11 +5,11 @@ import com.epam.esm.model.GiftCertificate;
 import java.util.Comparator;
 import java.util.List;
 
-public class SortCertificateImpl implements SortCertificate {
+public class SortGiftCertificateImpl implements SortGiftCertificate {
     private String sortByName;
     private String sortByDate;
 
-    public SortCertificateImpl(String sortByName, String sortByDate) {
+    public SortGiftCertificateImpl(String sortByName, String sortByDate) {
         this.sortByName = sortByName;
         this.sortByDate = sortByDate;
     }

@@ -4,6 +4,6 @@ import com.epam.esm.model.GiftCertificate;
 
 import java.util.List;
 
-public interface SortCertificate {
+public interface SortGiftCertificate {
     void sort(List<GiftCertificate> certificates);
 }

@@ -2,7 +2,6 @@ package com.epam.esm.facade.impl;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.TagFacade;
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,10 @@ import java.util.List;
 public class TagFacadeImpl implements TagFacade {
     @Autowired
     TagService tagService;
+
+    public TagFacadeImpl(TagService tagService) {
+        this.tagService = tagService;
+    }
 
     @Override
     public JsonResult<Tag> getTag(int id) {

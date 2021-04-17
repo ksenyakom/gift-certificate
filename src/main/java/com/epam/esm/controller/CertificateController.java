@@ -6,8 +6,8 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.service.sort.SortCertificate;
-import com.epam.esm.service.sort.SortCertificateImpl;
+import com.epam.esm.service.sort.SortGiftCertificate;
+import com.epam.esm.service.sort.SortGiftCertificateImpl;
 import com.epam.esm.validator.GiftCertificateValidator;
 import com.epam.esm.validator.SearchValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/certificates")
@@ -86,7 +81,7 @@ public class CertificateController {
                 String sortByName = searchParams.getSortByName();
                 String sortByDate = searchParams.getSortByDate();
                 if ( sortByName != null || sortByDate != null) {
-                    SortCertificate sortCertificate = new SortCertificateImpl(sortByName, sortByDate);
+                    SortGiftCertificate sortCertificate = new SortGiftCertificateImpl(sortByName, sortByDate);
                     sortCertificate.sort(jsonResult.getResult());
                 }
             }

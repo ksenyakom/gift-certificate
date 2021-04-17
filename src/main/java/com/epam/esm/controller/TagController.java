@@ -16,12 +16,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/tags")
 public class TagController {
+
     @Autowired
     private TagService tagService;
+
     @Autowired
     private TagFacade tagFacade;
-
-
 
     @GetMapping()
     public JsonResult<Tag> index() throws ServiceException {
