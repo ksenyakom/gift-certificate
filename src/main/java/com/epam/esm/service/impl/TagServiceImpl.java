@@ -6,11 +6,8 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -21,6 +18,7 @@ public class TagServiceImpl implements TagService {
     public TagServiceImpl (TagDao tagDao) {
         this.tagDao = tagDao;
     }
+
     @Override
     public Tag findById(Integer id) throws ServiceException {
         try {

@@ -1,6 +1,5 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.controller.ExceptionInterceptor;
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.GiftCertificate;
@@ -14,13 +13,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Component
+@Repository
 public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
 

@@ -1,8 +1,7 @@
 package com.epam.esm.model;
 
-import java.util.Objects;
-
 public class Tag extends Entity{
+
     private String name;
 
     public Tag() {

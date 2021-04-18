@@ -6,7 +6,9 @@ import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
 public class ExceptionInterceptor {

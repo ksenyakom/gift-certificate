@@ -4,6 +4,12 @@ import com.epam.esm.model.Entity;
 
 import java.util.List;
 
+/**
+ * A class containing the result of operation.
+ * Serve for wrap result for transmission to the client.
+ *
+ * @param <T> - type of model, containing in the result
+ */
 public class JsonResult<T extends Entity> {
     private boolean success;
     private String status;

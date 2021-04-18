@@ -4,21 +4,19 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+/**
+ * Controller class for Tag
+ */
 
 @RestController
 @RequestMapping("/tags")
 public class TagController {
-
-    @Autowired
-    private TagService tagService;
 
     @Autowired
     private TagFacade tagFacade;
@@ -38,7 +36,7 @@ public class TagController {
     @ResponseStatus(HttpStatus.CREATED)
     public JsonResult<Tag> create(@RequestBody Tag tag, BindingResult result) throws ServiceException {
         TagValidator validator = new TagValidator();
-        validator.validate(tag,result);
+        validator.validate(tag, result);
         if (!result.hasErrors()) {
             return tagFacade.save(tag);
         } else {

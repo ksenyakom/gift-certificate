@@ -4,10 +4,10 @@ import com.epam.esm.model.SearchParams;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class SearchValidator implements Validator {
+/**
+ * Validator for search parameters for GiftCertificate class.
+ */
+public class SearchGiftCertificateValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
         return SearchParams.class.equals(aClass);
@@ -22,13 +22,9 @@ public class SearchValidator implements Validator {
         String sortByDate = searchParams.getSortByDate();
         String name = searchParams.getName();
         String tagName = searchParams.getTagName();
-//        String sortByName = allRequestParams.get("sortByName");
-//        String sortByDate = allRequestParams.get("sortByDate");
-//        String name = allRequestParams.get("name");
-//        String tagName = allRequestParams.get("tagName");
 
         if (name != null && name.length() > maxLength) {
-                errors.rejectValue("name", "invalid length", "Name: invalid length");
+            errors.rejectValue("name", "invalid length", "Name: invalid length");
         }
 
         if (tagName != null && tagName.length() > maxLength) {

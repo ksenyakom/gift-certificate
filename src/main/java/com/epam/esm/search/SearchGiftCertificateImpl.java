@@ -1,4 +1,4 @@
-package com.epam.esm.service.search;
+package com.epam.esm.search;
 
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
@@ -6,13 +6,18 @@ import com.epam.esm.service.GiftCertificateService;
 import java.util.List;
 
 public class SearchGiftCertificateImpl implements SearchGiftCertificate {
-    private String name;
-    private String tagName;
+    /**
+     * Name or part name of GiftCertificate.
+     */
+    private final String name;
+    /**
+     * Name or part name of Tag.
+     */
+    private final String tagName;
 
     public SearchGiftCertificateImpl(String name, String tagName) {
         this.name = name;
         this.tagName = tagName;
-
     }
 
     @Override
@@ -38,7 +43,6 @@ public class SearchGiftCertificateImpl implements SearchGiftCertificate {
         if (tagName != null) { // 0010
             b |= 2;
         }
-
         return b;
     }
 }

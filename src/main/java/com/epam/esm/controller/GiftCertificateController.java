@@ -4,23 +4,24 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
-import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.service.sort.SortGiftCertificate;
-import com.epam.esm.service.sort.SortGiftCertificateImpl;
+import com.epam.esm.sort.SortGiftCertificate;
+import com.epam.esm.sort.SortGiftCertificateImpl;
 import com.epam.esm.validator.GiftCertificateValidator;
-import com.epam.esm.validator.SearchValidator;
+import com.epam.esm.validator.SearchGiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller class for GiftCertificate
+ */
 @RestController
 @RequestMapping("/certificates")
-public class CertificateController {
-    @Autowired
-    private GiftCertificateService giftCertificateService;
+public class GiftCertificateController {
+
     @Autowired
     private GiftCertificateFacade giftCertificateFacade;
 
@@ -70,7 +71,7 @@ public class CertificateController {
     @GetMapping("/search")
     public JsonResult<GiftCertificate> search(@ModelAttribute SearchParams searchParams,
                                               BindingResult result) {
-        SearchValidator searchValidator = new SearchValidator();
+        SearchGiftCertificateValidator searchValidator = new SearchGiftCertificateValidator();
         searchValidator.validate(searchParams, result);
 
         if (!result.hasErrors()) {

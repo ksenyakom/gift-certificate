@@ -4,8 +4,6 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.search.SearchGiftCertificateImpl;
-import com.epam.esm.service.search.SearchGiftCertificate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

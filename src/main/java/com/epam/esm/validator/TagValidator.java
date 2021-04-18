@@ -3,7 +3,9 @@ package com.epam.esm.validator;
 import com.epam.esm.model.Tag;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
+/**
+ * Validator for Tag class.
+ */
 public class TagValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {

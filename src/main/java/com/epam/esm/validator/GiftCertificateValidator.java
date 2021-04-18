@@ -7,6 +7,9 @@ import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 
+/**
+ * Validator for GiftCertificate class.
+ */
 public class GiftCertificateValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {

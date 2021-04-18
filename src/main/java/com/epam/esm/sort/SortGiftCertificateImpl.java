@@ -1,4 +1,4 @@
-package com.epam.esm.service.sort;
+package com.epam.esm.sort;
 
 import com.epam.esm.model.GiftCertificate;
 
@@ -6,7 +6,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SortGiftCertificateImpl implements SortGiftCertificate {
+    /**
+     * if value != null, then sorting by name performed.
+     * Value must be "asc" or "desc" to specify sort order.
+     */
     private String sortByName;
+    /**
+     * if value != null, then sorting by date created performed.
+     * Value must be "asc" or "desc" to specify sort order.
+     */
     private String sortByDate;
 
     public SortGiftCertificateImpl(String sortByName, String sortByDate) {

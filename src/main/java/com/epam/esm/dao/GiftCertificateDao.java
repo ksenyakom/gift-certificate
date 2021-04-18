@@ -5,9 +5,12 @@ import com.epam.esm.model.Tag;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
+
+/**
+ * Defines methods for dao layout for GiftCertificate class.
+ */
 
 public interface GiftCertificateDao {
 
@@ -36,9 +39,31 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> readAll() throws DaoException;
 
+    /**
+     * Reads GiftCertificates by tags.
+     *
+     * @param tags - certificate must have at least one of these tags.
+     * @return - list of found certificates
+     * @throws DaoException if any exception occur while receiving data.
+     */
     List<GiftCertificate> readByTags(List<Tag> tags) throws DaoException;
 
+    /**
+     * Reads GiftCertificates by name.
+     *
+     * @param name - certificate's name or part of name.
+     * @return - list of found certificates
+     * @throws DaoException if any exception occur while receiving data.
+     */
     List<GiftCertificate> readByName(String name) throws DaoException;
 
+    /**
+     * Reads GiftCertificates by name and tag.
+     *
+     * @param name - certificate's name or part of name.
+     * @param tags - certificate must have at least one of these tags.
+     * @return - list of found certificates
+     * @throws DaoException if any exception occur while receiving data.
+     */
     List<GiftCertificate> readByNameAndTagName(String name, List<Tag> tags) throws DaoException;
 }

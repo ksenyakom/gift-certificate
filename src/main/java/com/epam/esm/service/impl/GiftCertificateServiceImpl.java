@@ -17,9 +17,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class GiftCertificateServiceImpl implements GiftCertificateService {
+
     private GiftCertificateDao giftCertificateDao;
+
     private TagDao tagDao;
 
     @Autowired
@@ -50,6 +51,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
+    @Transactional
     @Override
     public void save(GiftCertificate certificate) throws ServiceException {
         try {
@@ -76,6 +78,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
+    @Transactional
     @Override
     public void delete(Integer id) throws ServiceException {
         try {

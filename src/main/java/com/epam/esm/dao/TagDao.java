@@ -5,6 +5,10 @@ import com.epam.esm.model.Tag;
 
 import java.util.List;
 
+/**
+ * Defines methods for dao layout for Tag class.
+ */
+
 public interface TagDao {
 
     Integer create(Tag tag) throws DaoException;
@@ -19,6 +23,12 @@ public interface TagDao {
 
     List<GiftCertificate> readCertificateByTag(Integer id) throws DaoException;
 
-
+    /**
+     * Reads Tag by name.
+     *
+     * @param tagName - tag's name or part of name.
+     * @return - list of found tags.
+     * @throws DaoException if any exception occur while receiving data.
+     */
     List<Tag> readByName(String tagName) throws DaoException;
 }
