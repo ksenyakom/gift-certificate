@@ -1,12 +1,14 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.model.SearchParams;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
  * Validator for search parameters for GiftCertificate class.
  */
+@Service
 public class SearchGiftCertificateValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {

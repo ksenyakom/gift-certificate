@@ -52,7 +52,7 @@ public class JsonResult<T extends Entity> {
     }
 
     public static class Builder<T extends Entity> {
-        private JsonResult<T> jsonResult;
+        private final JsonResult<T> jsonResult;
 
         public Builder() {
             jsonResult = new JsonResult<>();

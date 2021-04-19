@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -57,6 +56,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             Integer certificateId = createCertificate(certificate);
             createCertificateTag(certificateId, certificate);
             logger.debug("New certificate created with id={}", certificateId);
+
             return certificateId;
         } catch (DataAccessException e) {
             throw new DaoException("Can not create new GiftCertificate. Name = " + certificate.getName(), "01", e);
@@ -65,6 +65,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private Integer createCertificate(GiftCertificate certificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
                     .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
@@ -77,6 +78,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             ps.setBoolean(6, true);
             return ps;
         }, keyHolder);
+
         return keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
     }
 
@@ -93,6 +95,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             GiftCertificate certificate = jdbcTemplate.queryForObject(READ, ROW_MAPPER, id);
             readTagsForCertificate(certificate);
+
             return certificate;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read GiftCertificate (id = " + id + ").", "02", e);
@@ -106,6 +109,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             if (!certificates.isEmpty()) {
                 readTagsForCertificate(certificates);
             }
+
             return certificates;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all GiftCertificates", "05", e);
@@ -121,6 +125,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             }
             certificates = certificates.stream().distinct().collect(Collectors.toList());
             readTagsForCertificate(certificates);
+
             return certificates;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read certificates by tags (tag = " + tags.toString() + ").", "22", e);
@@ -132,6 +137,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             List<GiftCertificate> certificates = jdbcTemplate.query(READ_BY_NAME, ROW_MAPPER, name);
             readTagsForCertificate(certificates);
+
             return certificates;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read certificates by name (name = " + name + ").", "23", e);
@@ -147,6 +153,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             }
             certificates = certificates.stream().distinct().collect(Collectors.toList());
             readTagsForCertificate(certificates);
+
             return certificates;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read certificates by tags (tag = " + tags.toString() + ").", "22", e);

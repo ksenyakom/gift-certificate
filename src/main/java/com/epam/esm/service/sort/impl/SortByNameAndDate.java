@@ -1,11 +1,13 @@
-package com.epam.esm.sort;
+package com.epam.esm.service.sort.impl;
 
 import com.epam.esm.model.GiftCertificate;
+import com.epam.esm.service.sort.SortGiftCertificateService;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
-public class SortGiftCertificateImpl implements SortGiftCertificate {
+public class SortByNameAndDate implements SortGiftCertificateService {
     /**
      * if value != null, then sorting by name performed.
      * Value must be "asc" or "desc" to specify sort order.
@@ -17,15 +19,17 @@ public class SortGiftCertificateImpl implements SortGiftCertificate {
      */
     private String sortByDate;
 
-    public SortGiftCertificateImpl(String sortByName, String sortByDate) {
+    public SortByNameAndDate(String sortByName, String sortByDate) {
         this.sortByName = sortByName;
         this.sortByDate = sortByDate;
     }
 
     @Override
     public void sort(List<GiftCertificate> certificates) {
-        Comparator<GiftCertificate> comparator = getComparator();
-        certificates.sort(comparator);
+        if (sortByDate != null || sortByDate != null) {
+            Comparator<GiftCertificate> comparator = getComparator();
+            certificates.sort(comparator);
+        }
     }
 
     private Comparator<GiftCertificate> getComparator() {

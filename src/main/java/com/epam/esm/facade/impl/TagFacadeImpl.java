@@ -48,7 +48,7 @@ public class TagFacadeImpl implements TagFacade {
     @Override
     public JsonResult<Tag> getAllTags() {
         List<Tag> tags = tagService.findAll();
-        return  new JsonResult.Builder<Tag>()
+        return new JsonResult.Builder<Tag>()
                 .withSuccess(true)
                 .withResult(tags)
                 .build();

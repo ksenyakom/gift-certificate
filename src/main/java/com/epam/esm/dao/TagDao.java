@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Defines methods for dao layout for Tag class.
  */
-
 public interface TagDao {
 
     Integer create(Tag tag) throws DaoException;

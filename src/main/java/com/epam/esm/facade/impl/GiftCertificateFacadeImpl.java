@@ -3,7 +3,7 @@ package com.epam.esm.facade.impl;
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.search.SearchGiftCertificateImpl;
+import com.epam.esm.service.search.impl.SearchByNameAndTagName;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @Autowired
-    private GiftCertificateService giftCertificateService;
+    private final GiftCertificateService giftCertificateService;
 
     public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService) {
         this.giftCertificateService = giftCertificateService;
@@ -48,7 +48,7 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
 
     @Override
     public JsonResult<GiftCertificate> search(String name, String tagName) {
-        SearchGiftCertificateImpl searchCertificate = new SearchGiftCertificateImpl(name,tagName);
+        SearchByNameAndTagName searchCertificate = new SearchByNameAndTagName(name, tagName);
         List<GiftCertificate> certificateList = searchCertificate.search(giftCertificateService);
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)

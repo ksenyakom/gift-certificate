@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * Defines methods for dao layout for GiftCertificate class.
  */
-
 public interface GiftCertificateDao {
 
     RowMapper<GiftCertificate> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> {

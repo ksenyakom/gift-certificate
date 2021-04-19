@@ -81,7 +81,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void readByName() throws DaoException {
-        String name = "cut"; //TODO как сделать equals ignore case??
+        String name = "cut";
         assertEquals(1, giftCertificateDao.readByName(name).size());
     }
 

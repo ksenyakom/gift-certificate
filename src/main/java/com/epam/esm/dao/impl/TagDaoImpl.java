@@ -23,7 +23,6 @@ import java.util.List;
 public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
 
-
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -38,7 +37,6 @@ public class TagDaoImpl implements TagDao {
     private static final String DELETE = "DELETE FROM tag WHERE id = ?";
     private static final String READ_ALL = "SELECT * FROM tag";
     private static final String READ_CERTIFICATES_BY_TAG = "SELECT * FROM certificate_tag where tag_id = ?";
-
 
     @Override
     public Integer create(Tag entity) throws DaoException {

@@ -4,7 +4,9 @@ import com.epam.esm.dto.JsonResult;
 import com.epam.esm.facade.TagFacade;
 import com.epam.esm.model.Tag;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.validator.TagValidator;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controller class for Tag
  */
-
 @RestController
 @RequestMapping("/tags")
 public class TagController {
@@ -24,7 +25,6 @@ public class TagController {
     @GetMapping()
     public JsonResult<Tag> index() throws ServiceException {
         return tagFacade.getAllTags();
-
     }
 
     @GetMapping("/{id}")
@@ -34,14 +34,11 @@ public class TagController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public JsonResult<Tag> create(@RequestBody Tag tag, BindingResult result) throws ServiceException {
-        TagValidator validator = new TagValidator();
-        validator.validate(tag, result);
-        if (!result.hasErrors()) {
-            return tagFacade.save(tag);
-        } else {
+    public JsonResult<Tag> create(@Valid @RequestBody Tag tag, BindingResult result) throws ServiceException {
+        if (result.hasErrors()) {
             throw new ServiceException(message(result), "20");
         }
+        return tagFacade.save(tag);
     }
 
     @DeleteMapping("/{id}")
@@ -53,10 +50,8 @@ public class TagController {
         StringBuilder sb = new StringBuilder();
         result.getFieldErrors()
                 .forEach(fieldError -> sb.append(" ")
-                        .append(fieldError.getField())
-                        .append(" :")
-                        .append(fieldError.getCode())
-                        .append(";"));
+                        .append(fieldError.getField()).append(": ")
+                        .append(fieldError.getDefaultMessage()).append("."));
         return sb.toString();
     }
 }

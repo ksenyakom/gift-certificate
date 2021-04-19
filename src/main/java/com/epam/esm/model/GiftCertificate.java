@@ -8,11 +8,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class GiftCertificate extends Certificate {
+
     private BigDecimal price;
+
     private int duration;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime lastUpdateDate;
+
     private boolean isActive;
+
     private List<Tag> tags;
 
     public GiftCertificate() {
@@ -35,6 +40,7 @@ public class GiftCertificate extends Certificate {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
     public BigDecimal getPrice() {
         return price;
     }

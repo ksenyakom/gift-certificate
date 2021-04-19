@@ -1,11 +1,12 @@
-package com.epam.esm.search;
+package com.epam.esm.service.search.impl;
 
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.search.SearchGiftCertificateService;
 
 import java.util.List;
 
-public class SearchGiftCertificateImpl implements SearchGiftCertificate {
+public class SearchByNameAndTagName implements SearchGiftCertificateService {
     /**
      * Name or part name of GiftCertificate.
      */
@@ -15,7 +16,7 @@ public class SearchGiftCertificateImpl implements SearchGiftCertificate {
      */
     private final String tagName;
 
-    public SearchGiftCertificateImpl(String name, String tagName) {
+    public SearchByNameAndTagName(String name, String tagName) {
         this.name = name;
         this.tagName = tagName;
     }

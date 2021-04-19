@@ -5,21 +5,23 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public abstract class Certificate extends Entity{
+public abstract class Certificate extends Entity {
     private String name;
+
     private String description;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createDate;
 
-    public Certificate() {
+    protected Certificate() {
     }
 
-    public Certificate(String name, String description) {
+    protected Certificate(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Certificate(Integer id) {
+    protected Certificate(Integer id) {
         super(id);
     }
 

@@ -1,13 +1,18 @@
 package com.epam.esm.model;
 
-public class Tag extends Entity{
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
+public class Tag extends Entity {
+
+    @NotEmpty(message = "empty field")
+    @Size(min = 2, max = 255, message = "invalid length, must be from 2 to 255")
     private String name;
 
     public Tag() {
     }
 
-    public Tag(Integer id , String name) {
+    public Tag(Integer id, String name) {
         super(id);
         this.name = name;
     }
@@ -29,7 +34,6 @@ public class Tag extends Entity{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         return super.equals(o);
-
     }
 
     @Override

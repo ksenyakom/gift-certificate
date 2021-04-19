@@ -1,9 +1,13 @@
 package com.epam.esm.model;
 
 public class SearchParams {
+
     private String name;
-    private  String tagName;
+
+    private String tagName;
+
     private String sortByName;
+
     private String sortByDate;
 
     public String getTagName() {
