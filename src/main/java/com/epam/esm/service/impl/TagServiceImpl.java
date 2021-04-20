@@ -15,7 +15,7 @@ public class TagServiceImpl implements TagService {
     private TagDao tagDao;
 
     @Autowired
-    public TagServiceImpl (TagDao tagDao) {
+    public TagServiceImpl(TagDao tagDao) {
         this.tagDao = tagDao;
     }
 
@@ -40,7 +40,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void save(Tag entity) throws ServiceException {
         try {
-                entity.setId(tagDao.create(entity));
+            entity.setId(tagDao.create(entity));
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

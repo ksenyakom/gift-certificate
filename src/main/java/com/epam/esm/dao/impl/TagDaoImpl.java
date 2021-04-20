@@ -12,9 +12,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -23,9 +24,9 @@ import java.util.List;
 public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public TagDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -39,7 +40,8 @@ public class TagDaoImpl implements TagDao {
     private static final String READ_CERTIFICATES_BY_TAG = "SELECT * FROM certificate_tag where tag_id = ?";
 
     @Override
-    public Integer create(Tag entity) throws DaoException {
+    @NotNull
+    public Integer create(@NotNull Tag entity) throws DaoException {
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -49,8 +51,11 @@ public class TagDaoImpl implements TagDao {
                 ps.setString(1, entity.getName());
                 return ps;
             }, keyHolder);
-
-            Integer id = keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
+            Number number =  keyHolder.getKey();
+            Integer id = number == null ? null : number.intValue();
+            if (id == null) {
+                throw new DaoException("There is no autoincremented index after trying to add record into table `tag`", "30");
+            }
             logger.debug("New tag created with id={}, name={}", id, entity.getName());
 
             return id;
@@ -60,7 +65,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag read(Integer id) throws DaoException {
+    @Nullable
+    public Tag read(@NotNull Integer id) throws DaoException {
         try {
             return jdbcTemplate.queryForObject(READ, new BeanPropertyRowMapper<>(Tag.class), id);
         } catch (DataAccessException e) {
@@ -69,7 +75,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void read(Tag tag) throws DaoException {
+    public void read(@NotNull Tag tag) throws DaoException {
         try {
             String name = jdbcTemplate.queryForObject(READ_NAME, String.class, tag.getId());
             tag.setName(name);
@@ -79,7 +85,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void delete(Integer id) throws DaoException {
+    public void delete(@NotNull Integer id) throws DaoException {
         try {
             jdbcTemplate.update(DELETE, id);
             logger.debug("Deleted tag with id={}", id);
@@ -89,6 +95,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
+    @Nullable
     public List<Tag> readAll() throws DaoException {
         try {
             return jdbcTemplate.query(READ_ALL, new BeanPropertyRowMapper<>(Tag.class));
@@ -98,7 +105,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<GiftCertificate> readCertificateByTag(Integer id) throws DaoException {
+    @Nullable
+    public List<GiftCertificate> readCertificateByTag(@NotNull Integer id) throws DaoException {
         try {
             return jdbcTemplate.query(READ_CERTIFICATES_BY_TAG, new BeanPropertyRowMapper<>(GiftCertificate.class), id);
         } catch (DataAccessException e) {
@@ -107,7 +115,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> readByName(String tagName) throws DaoException {
+    @Nullable
+    public List<Tag> readByName(@NotNull String tagName) throws DaoException {
         try {
             return jdbcTemplate.query(READ_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tagName);
         } catch (DataAccessException e) {

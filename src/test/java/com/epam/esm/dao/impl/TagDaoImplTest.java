@@ -59,7 +59,7 @@ class TagDaoImplTest {
 
     @Test
     void createException() {
-       Tag emptyTag = new Tag();
+        Tag emptyTag = new Tag();
         assertThrows(DaoException.class, () -> tagDao.create(emptyTag));
     }
 
@@ -88,7 +88,7 @@ class TagDaoImplTest {
 
     @Test
     void readByName() throws DaoException {
-        String tagName ="care";
+        String tagName = "care";
         List<Tag> tags = tagDao.readByName(tagName);
         assertEquals(2, tags.size());
     }

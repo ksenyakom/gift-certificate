@@ -3,7 +3,9 @@ package com.epam.esm.dao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
@@ -28,14 +30,17 @@ public interface GiftCertificateDao {
         return giftCertificate;
     };
 
-    Integer create(GiftCertificate entity) throws DaoException;
+    @NotNull
+    Integer create(@NotNull GiftCertificate entity) throws DaoException;
 
-    GiftCertificate read(Integer id) throws DaoException;
+    @Nullable
+    GiftCertificate read(@NotNull Integer id) throws DaoException;
 
-    void update(GiftCertificate entity) throws DaoException;
+    void update(@NotNull GiftCertificate entity) throws DaoException;
 
-    void delete(Integer id) throws DaoException;
+    void delete(@NotNull Integer id) throws DaoException;
 
+    @NotNull
     List<GiftCertificate> readAll() throws DaoException;
 
     /**
@@ -45,7 +50,8 @@ public interface GiftCertificateDao {
      * @return - list of found certificates
      * @throws DaoException if any exception occur while receiving data.
      */
-    List<GiftCertificate> readByTags(List<Tag> tags) throws DaoException;
+    @NotNull
+    List<GiftCertificate> readByTags(@NotNull List<Tag> tags) throws DaoException;
 
     /**
      * Reads GiftCertificates by name.
@@ -54,7 +60,8 @@ public interface GiftCertificateDao {
      * @return - list of found certificates
      * @throws DaoException if any exception occur while receiving data.
      */
-    List<GiftCertificate> readByName(String name) throws DaoException;
+    @NotNull
+    List<GiftCertificate> readByName(@NotNull String name) throws DaoException;
 
     /**
      * Reads GiftCertificates by name and tag.
@@ -64,5 +71,6 @@ public interface GiftCertificateDao {
      * @return - list of found certificates
      * @throws DaoException if any exception occur while receiving data.
      */
-    List<GiftCertificate> readByNameAndTagName(String name, List<Tag> tags) throws DaoException;
+    @NotNull
+    List<GiftCertificate> readByNameAndTagName(@NotNull String name, @NotNull List<Tag> tags) throws DaoException;
 }

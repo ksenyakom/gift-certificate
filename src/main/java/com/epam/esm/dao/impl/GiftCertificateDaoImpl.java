@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -41,7 +43,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_ALL = "SELECT * FROM gift_certificate";
     private static final String READ_BY_NAME = "SELECT * FROM gift_certificate WHERE name LIKE CONCAT('%', ?, '%')";
 
-
     private static final String READ_BY_TAGID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE t.tag_id = ?";
     private static final String READ_BY_NAME_AND_TAGID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE c.name LIKE CONCAT('%', ?, '%') AND t.tag_id = ?";
 
@@ -51,9 +52,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String ADD_CERTIFICATE_TAG = "INSERT INTO certificate_tag (certificate_id, tag_id) VALUES (?,?)";
 
     @Override
-    public Integer create(GiftCertificate certificate) throws DaoException {
+    @NonNull
+    public Integer create(@NonNull GiftCertificate certificate) throws DaoException {
         try {
             Integer certificateId = createCertificate(certificate);
+            if (certificateId == null) {
+                throw new DaoException("There is no autoincremented index after trying to add record into table `gift_certificate`", "31");
+            }
             createCertificateTag(certificateId, certificate);
             logger.debug("New certificate created with id={}", certificateId);
 
@@ -63,7 +68,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
-    private Integer createCertificate(GiftCertificate certificate) {
+    private Integer createCertificate(@NonNull GiftCertificate certificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -78,11 +83,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             ps.setBoolean(6, true);
             return ps;
         }, keyHolder);
-
-        return keyHolder.getKey() == null ? null : keyHolder.getKey().intValue();
+        Number number = keyHolder.getKey();
+        return number == null ? null : number.intValue();
     }
 
-    private void createCertificateTag(Integer certificateId, GiftCertificate certificate) {
+    private void createCertificateTag(@Nullable Integer certificateId, @NonNull GiftCertificate certificate) {
         if (certificateId != null && certificate.getTags() != null) {
             for (Tag tag : certificate.getTags()) {
                 jdbcTemplate.update(CREATE_CERTIFICATE_TAG, certificateId, tag.getId());
@@ -91,7 +96,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate read(Integer id) throws DaoException {
+    @Nullable
+    public GiftCertificate read(@NonNull Integer id) throws DaoException {
         try {
             GiftCertificate certificate = jdbcTemplate.queryForObject(READ, ROW_MAPPER, id);
             readTagsForCertificate(certificate);
@@ -103,6 +109,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
+    @NonNull
     public List<GiftCertificate> readAll() throws DaoException {
         try {
             List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL, ROW_MAPPER);
@@ -117,7 +124,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> readByTags(List<Tag> tags) throws DaoException {
+    @NonNull
+    public List<GiftCertificate> readByTags(@NonNull List<Tag> tags) throws DaoException {
         try {
             List<GiftCertificate> certificates = new ArrayList<>();
             for (Tag tag : tags) {
@@ -133,7 +141,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> readByName(String name) throws DaoException {
+    @NonNull
+    public List<GiftCertificate> readByName(@NonNull String name) throws DaoException {
         try {
             List<GiftCertificate> certificates = jdbcTemplate.query(READ_BY_NAME, ROW_MAPPER, name);
             readTagsForCertificate(certificates);
@@ -145,7 +154,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> readByNameAndTagName(String name, List<Tag> tags) throws DaoException {
+    @NonNull
+    public List<GiftCertificate> readByNameAndTagName(@NonNull String name, @NonNull List<Tag> tags) throws DaoException {
         try {
             List<GiftCertificate> certificates = new ArrayList<>();
             for (Tag tag : tags) {
@@ -161,7 +171,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void update(GiftCertificate certificate) throws DaoException {
+    public void update(@NonNull GiftCertificate certificate) throws DaoException {
         try {
             jdbcTemplate.update(UPDATE, certificate.getName(), certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(), certificate.getId());
             updateCertificateTags(certificate);
@@ -172,7 +182,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void delete(Integer id) throws DaoException {
+    public void delete(@NonNull Integer id) throws DaoException {
         try {
             jdbcTemplate.update(DELETE, id);
             logger.debug("Certificate was deleted(isActive=false) with id={}", id);
@@ -181,12 +191,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
-    private void readTagsForCertificate(List<GiftCertificate> certificates) {
-        Map<Integer, Tag> tagMap = new HashMap<>();
-        Tag tag = null;
-        List<Tag> tags = null;
-
+    private void readTagsForCertificate(@Nullable List<GiftCertificate> certificates) {
         if (certificates != null) {
+            Map<Integer, Tag> tagMap = new HashMap<>();
+            Tag tag;
+            List<Tag> tags;
+
             for (GiftCertificate certificate : certificates) {
                 List<Integer> tagsId = jdbcTemplate.queryForList(READ_TAG_BY_CERTIFICATE, Integer.class, certificate.getId());
                 tags = new ArrayList<>();
@@ -199,14 +209,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
-    private void readTagsForCertificate(GiftCertificate certificate) {
+    private void readTagsForCertificate(@Nullable GiftCertificate certificate) {
         if (certificate != null) {
             List<Tag> tags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
             certificate.setTags(tags);
         }
     }
 
-    private void updateCertificateTags(GiftCertificate certificate) {
+    private void updateCertificateTags(@NonNull GiftCertificate certificate) {
         if (certificate.getTags() != null) {
             List<Tag> newTagList = certificate.getTags();
             List<Tag> existingTags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());

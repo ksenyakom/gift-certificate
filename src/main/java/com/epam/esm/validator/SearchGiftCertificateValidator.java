@@ -1,6 +1,7 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.model.SearchParams;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -11,12 +12,12 @@ import org.springframework.validation.Validator;
 @Service
 public class SearchGiftCertificateValidator implements Validator {
     @Override
-    public boolean supports(Class<?> aClass) {
+    public boolean supports(@NonNull  Class<?> aClass) {
         return SearchParams.class.equals(aClass);
     }
 
     @Override
-    public void validate(Object o, Errors errors) {
+    public void validate(@NonNull Object o, @NonNull Errors errors) {
         SearchParams searchParams = (SearchParams) o;
 
         int maxLength = 255;
@@ -33,16 +34,23 @@ public class SearchGiftCertificateValidator implements Validator {
             errors.rejectValue("tagName", "invalid length", "TagName: invalid length");
         }
 
-        if (sortByDate != null && !(sortByDate.equalsIgnoreCase("asc") || sortByDate.equalsIgnoreCase("desc"))) {
+        if (sortByDate != null && !(isAscending(sortByDate) || isDescenging(sortByDate))) {
             errors.rejectValue("sortByDate", "invalid value", "sortByDate: invalid value. Can be asc or desc");
         }
 
 
-        if (sortByName != null && !(sortByName.equalsIgnoreCase("asc") || sortByName.equalsIgnoreCase("desc"))) {
+        if (sortByName != null && !(isAscending(sortByName) || isDescenging(sortByName))) {
             errors.rejectValue("sortByName", "invalid value", "sortByName: invalid value. Can be asc or desc");
         }
     }
 
+    private boolean isAscending(String sortByDate) {
+        return sortByDate.equalsIgnoreCase("asc");
+    }
+
+    private boolean isDescenging(String sortByDate) {
+        return sortByDate.equalsIgnoreCase("desc");
+    }
 
 }
 

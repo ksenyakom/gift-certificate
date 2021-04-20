@@ -2,6 +2,7 @@ package com.epam.esm.validator;
 
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -14,12 +15,12 @@ import java.math.BigDecimal;
 @Service
 public class GiftCertificateValidator implements Validator {
     @Override
-    public boolean supports(Class<?> aClass) {
+    public boolean supports(@NonNull  Class<?> aClass) {
         return GiftCertificate.class.equals(aClass);
     }
 
     @Override
-    public void validate(Object o, Errors errors) {
+    public void validate(@NonNull  Object o, @NonNull  Errors errors) {
         GiftCertificate certificate = (GiftCertificate) o;
         int maxLength = 255;
         int minValue = 1;
@@ -42,7 +43,7 @@ public class GiftCertificateValidator implements Validator {
         }
 
         if (certificate.getDuration() <= 0) {
-            errors.rejectValue("duration", "invalid value");
+            errors.rejectValue("duration", "invalid value, must be equal or grater then 0");
         }
 
         if (certificate.getPrice() == null) {

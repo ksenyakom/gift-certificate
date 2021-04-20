@@ -8,9 +8,11 @@ import com.epam.esm.model.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -19,9 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    private GiftCertificateDao giftCertificateDao;
+    private final GiftCertificateDao giftCertificateDao;
 
-    private TagDao tagDao;
+    private final TagDao tagDao;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao) {
@@ -30,10 +32,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Nullable
     public GiftCertificate findById(Integer id) throws ServiceException {
         try {
             GiftCertificate certificate = giftCertificateDao.read(id);
-            readTagName(certificate.getTags());
+            if (certificate != null) {
+                readTagName(certificate.getTags());
+            }
             return certificate;
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
@@ -41,6 +46,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @NotNull
     public List<GiftCertificate> findAll() throws ServiceException {
         try {
             List<GiftCertificate> certificates = giftCertificateDao.readAll();
@@ -53,7 +59,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public void save(GiftCertificate certificate) throws ServiceException {
+    public void save(@NotNull GiftCertificate certificate) throws ServiceException {
         try {
             checkForNewTags(certificate.getTags());
             if (certificate.getId() == null) {
@@ -80,7 +86,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public void delete(Integer id) throws ServiceException {
+    public void delete(@NotNull Integer id) throws ServiceException {
         try {
             giftCertificateDao.delete(id);
         } catch (DaoException e) {
@@ -89,7 +95,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByTagName(String tagName) {
+    @NotNull
+    public List<GiftCertificate> findByTagName(@NotNull String tagName) {
         try {
             List<Tag> tags = tagDao.readByName(tagName);
             List<GiftCertificate> certificates = giftCertificateDao.readByTags(tags);
@@ -101,7 +108,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByName(String name) {
+    @NotNull
+    public List<GiftCertificate> findByName(@NotNull String name) {
         try {
             List<GiftCertificate> certificates = giftCertificateDao.readByName(name);
             readTagNames(certificates);
@@ -112,7 +120,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByNameAndTagName(String name, String tagName) {
+    @NotNull
+    public List<GiftCertificate> findByNameAndTagName(@NotNull String name, @NotNull String tagName) {
         try {
             List<Tag> tags = tagDao.readByName(tagName);
             List<GiftCertificate> certificates = giftCertificateDao.readByNameAndTagName(name, tags);
@@ -133,6 +142,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void readTagNames(List<GiftCertificate> certificates) throws DaoException {
         List<Tag> tags = certificates.stream()
+                .filter(certificate -> certificate.getTags() != null)
                 .flatMap(certificate -> certificate.getTags().stream())
                 .distinct()
                 .collect(Collectors.toList());

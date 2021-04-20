@@ -5,8 +5,6 @@ import com.epam.esm.facade.GiftCertificateFacade;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.SearchParams;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.service.sort.SortGiftCertificateService;
-import com.epam.esm.service.sort.impl.SortByNameAndDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -37,13 +35,11 @@ public class GiftCertificateController {
 
     @GetMapping()
     public JsonResult<GiftCertificate> index() {
-
         return giftCertificateFacade.getAllCertificates();
     }
 
     @GetMapping("/{id}")
     public JsonResult<GiftCertificate> show(@PathVariable("id") int id) {
-
         return giftCertificateFacade.getCertificate(id);
     }
 
@@ -60,7 +56,7 @@ public class GiftCertificateController {
 
     @PatchMapping("/{id}")
     public JsonResult<GiftCertificate> update(@RequestBody GiftCertificate certificate, BindingResult result,
-            @PathVariable("id") int id) {
+                                              @PathVariable("id") int id) {
         certificate.setId(id);
         validator.validate(certificate, result);
         if (result.hasErrors()) {
@@ -83,11 +79,10 @@ public class GiftCertificateController {
             throw new ServiceException(message(result), "24");
         }
 
-        JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(searchParams.getName(), searchParams.getTagName());
-        Optional.ofNullable(jsonResult.getResult()).ifPresent(certificates -> {
-            SortGiftCertificateService sortCertificate = new SortByNameAndDate(searchParams.getSortByName(), searchParams.getSortByDate());
-            sortCertificate.sort(certificates);
-        });
+        JsonResult<GiftCertificate> jsonResult =
+                giftCertificateFacade.search(searchParams.getName(), searchParams.getTagName());
+        Optional.ofNullable(jsonResult.getResult()).ifPresent(certificates ->
+                giftCertificateFacade.sort(searchParams.getSortByName(), searchParams.getSortByDate(), certificates));
 
         return jsonResult;
     }
