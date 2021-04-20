@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.JsonResult;
 import com.epam.esm.model.Entity;
-import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,9 +15,9 @@ public class ExceptionInterceptor {
 
     @ExceptionHandler(ServiceException.class)
     public @ResponseBody
-    JsonResult<? extends Entity> someError(ServiceException e) {
-        logger.error("Error code:{}. Error message:{}",e.getErrorCode(),e.getMessage(), e.getCause());
-        return new JsonResult.Builder<GiftCertificate>()
+    JsonResult<Entity> someError(final ServiceException e) {
+        logger.error("Error code:{}. Error message:{}", e.getErrorCode(), e.getMessage(), e.getCause());
+        return new JsonResult.Builder<>()
                 .withSuccess(false)
                 .withMessage(e.getMessage())
                 .withStatus(e.getErrorCode())

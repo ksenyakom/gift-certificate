@@ -25,7 +25,7 @@ public class TagDaoImpl implements TagDao {
     private static Logger logger = LogManager.getLogger(TagDaoImpl.class);
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public TagDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -51,7 +51,7 @@ public class TagDaoImpl implements TagDao {
                 ps.setString(1, entity.getName());
                 return ps;
             }, keyHolder);
-            Number number =  keyHolder.getKey();
+            Number number = keyHolder.getKey();
             Integer id = number == null ? null : number.intValue();
             if (id == null) {
                 throw new DaoException("There is no autoincremented index after trying to add record into table `tag`", "30");

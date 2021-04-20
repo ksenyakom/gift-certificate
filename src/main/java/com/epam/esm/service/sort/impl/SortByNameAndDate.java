@@ -36,7 +36,7 @@ public class SortByNameAndDate implements SortGiftCertificateService {
         Comparator<GiftCertificate> comparator = addSortByNameComparison();
         comparator = addSortByDateComparison(comparator);
         return comparator;
-}
+    }
 
     private Comparator<GiftCertificate> addSortByNameComparison() {
         if (sortByName != null) {

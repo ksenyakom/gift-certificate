@@ -11,7 +11,7 @@
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${patternshort}" />
+            <PatternLayout pattern="${patternshort}"/>
         </Console>
         <RollingFile name="logFile" fileName="logs/text.log"
                      filePattern="logs/Log-%d{yyyy-MM-dd}.log"
@@ -25,13 +25,13 @@
 
         <Logger name="by.ksu.dao.DaoFile" level="debug"
                 additivity="true">
-            <AppenderRef ref="Console" />
-            <AppenderRef ref="logFile" />
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="logFile"/>
         </Logger>
 
         <Root level="all">
-            <AppenderRef ref="Console" />
-            <AppenderRef ref="logFile" />
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="logFile"/>
         </Root>
     </Loggers>
 

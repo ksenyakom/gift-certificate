@@ -64,6 +64,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             checkForNewTags(certificate.getTags());
             if (certificate.getId() == null) {
                 certificate.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
+                certificate.setIsActive(true);
                 certificate.setId(giftCertificateDao.create(certificate));
             } else {
                 certificate.setLastUpdateDate(LocalDateTime.now(ZoneOffset.UTC));

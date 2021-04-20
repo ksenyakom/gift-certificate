@@ -15,12 +15,12 @@ import java.math.BigDecimal;
 @Service
 public class GiftCertificateValidator implements Validator {
     @Override
-    public boolean supports(@NonNull  Class<?> aClass) {
+    public boolean supports(@NonNull Class<?> aClass) {
         return GiftCertificate.class.equals(aClass);
     }
 
     @Override
-    public void validate(@NonNull  Object o, @NonNull  Errors errors) {
+    public void validate(@NonNull Object o, @NonNull Errors errors) {
         GiftCertificate certificate = (GiftCertificate) o;
         int maxLength = 255;
         int minValue = 1;

@@ -9,5 +9,5 @@ import java.util.List;
  * Interface for searching of GiftCertificate.
  */
 public interface SearchGiftCertificateService {
-        List<GiftCertificate> search(GiftCertificateService service) ;
+    List<GiftCertificate> search(GiftCertificateService service);
 }

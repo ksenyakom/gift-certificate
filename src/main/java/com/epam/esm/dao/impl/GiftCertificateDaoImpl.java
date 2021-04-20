@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static Logger logger = LogManager.getLogger(GiftCertificateDaoImpl.class);
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -43,8 +43,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_ALL = "SELECT * FROM gift_certificate";
     private static final String READ_BY_NAME = "SELECT * FROM gift_certificate WHERE name LIKE CONCAT('%', ?, '%')";
 
-    private static final String READ_BY_TAGID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE t.tag_id = ?";
-    private static final String READ_BY_NAME_AND_TAGID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE c.name LIKE CONCAT('%', ?, '%') AND t.tag_id = ?";
+    private static final String READ_BY_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE t.tag_id = ?";
+    private static final String READ_BY_NAME_AND_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE c.name LIKE CONCAT('%', ?, '%') AND t.tag_id = ?";
 
     private static final String READ_TAG_BY_CERTIFICATE = "SELECT tag_id as id FROM certificate_tag WHERE certificate_id = ?";
     private static final String CREATE_CERTIFICATE_TAG = "INSERT INTO  certificate_tag (certificate_id, tag_id) values (?,?)";
@@ -129,7 +129,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             List<GiftCertificate> certificates = new ArrayList<>();
             for (Tag tag : tags) {
-                certificates.addAll(jdbcTemplate.query(READ_BY_TAGID, ROW_MAPPER, tag.getId()));
+                certificates.addAll(jdbcTemplate.query(READ_BY_TAG_ID, ROW_MAPPER, tag.getId()));
             }
             certificates = certificates.stream().distinct().collect(Collectors.toList());
             readTagsForCertificate(certificates);
@@ -159,7 +159,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             List<GiftCertificate> certificates = new ArrayList<>();
             for (Tag tag : tags) {
-                certificates.addAll(jdbcTemplate.query(READ_BY_NAME_AND_TAGID, ROW_MAPPER, name, tag.getId()));
+                certificates.addAll(jdbcTemplate.query(READ_BY_NAME_AND_TAG_ID, ROW_MAPPER, name, tag.getId()));
             }
             certificates = certificates.stream().distinct().collect(Collectors.toList());
             readTagsForCertificate(certificates);

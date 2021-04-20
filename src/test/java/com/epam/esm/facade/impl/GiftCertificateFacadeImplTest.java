@@ -26,13 +26,14 @@ class GiftCertificateFacadeImplTest {
 
     @BeforeEach
     void setUp() {
-         giftCertificateFacade = new GiftCertificateFacadeImpl(giftCertificateService);
+        giftCertificateFacade = new GiftCertificateFacadeImpl(giftCertificateService);
     }
 
     @Test
     void getCertificate() {
         given(giftCertificateService.findById(anyInt())).willReturn(new GiftCertificate());
         JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getCertificate(anyInt());
+
         assertAll(() -> {
             assertEquals(1, jsonResult.getResult().size());
             assertTrue(jsonResult.isSuccess());
@@ -42,6 +43,7 @@ class GiftCertificateFacadeImplTest {
     @Test
     void save() {
         JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.save(new GiftCertificate());
+
         assertAll(() -> {
             assertEquals(1, jsonResult.getResult().size());
             assertTrue(jsonResult.isSuccess());
@@ -51,6 +53,7 @@ class GiftCertificateFacadeImplTest {
     @Test
     void delete() {
         JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.delete(anyInt());
+
         assertAll(() -> {
             assertNull(jsonResult.getResult());
             assertTrue(jsonResult.isSuccess());
@@ -60,6 +63,7 @@ class GiftCertificateFacadeImplTest {
     @Test
     void search() {
         JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.search(anyString(), anyString());
+
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());
             assertTrue(jsonResult.isSuccess());
@@ -70,6 +74,7 @@ class GiftCertificateFacadeImplTest {
     void getAllCertificates() {
         given(giftCertificateService.findAll()).willReturn(new ArrayList<>());
         JsonResult<GiftCertificate> jsonResult = giftCertificateFacade.getAllCertificates();
+
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());
             assertTrue(jsonResult.isSuccess());

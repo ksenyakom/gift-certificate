@@ -12,7 +12,7 @@ import org.springframework.validation.Validator;
 @Service
 public class SearchGiftCertificateValidator implements Validator {
     @Override
-    public boolean supports(@NonNull  Class<?> aClass) {
+    public boolean supports(@NonNull Class<?> aClass) {
         return SearchParams.class.equals(aClass);
     }
 

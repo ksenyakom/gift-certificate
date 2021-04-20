@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.model.Certificate;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
 import org.junit.jupiter.api.AfterAll;
@@ -19,17 +18,12 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class GiftCertificateDaoImplTest {
     private static EmbeddedDatabase embeddedDatabase;
-
-    private static JdbcTemplate jdbcTemplate;
 
     private static GiftCertificateDao giftCertificateDao;
 
@@ -40,8 +34,7 @@ class GiftCertificateDaoImplTest {
                 .setType(EmbeddedDatabaseType.H2)
                 .build();
 
-        jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(embeddedDatabase);
         giftCertificateDao = new GiftCertificateDaoImpl(jdbcTemplate);
     }
 
@@ -49,7 +42,6 @@ class GiftCertificateDaoImplTest {
     public static void tearDown() {
         embeddedDatabase.shutdown();
     }
-
 
     @ParameterizedTest
     @CsvSource({
@@ -68,6 +60,7 @@ class GiftCertificateDaoImplTest {
 
         assertAll("GiftCertificates should be equal",
                 () -> {
+                    assertNotNull(actual);
                     assertEquals(giftCertificate.getName(), actual.getName());
                     assertEquals(giftCertificate.getDescription(), actual.getDescription());
                     assertEquals(0, giftCertificate.getPrice().compareTo(actual.getPrice()));
@@ -82,24 +75,28 @@ class GiftCertificateDaoImplTest {
     @Test
     void readByName() throws DaoException {
         String name = "cut";
+
         assertEquals(1, giftCertificateDao.readByName(name).size());
     }
 
     @Test
-    void readByTagName() throws DaoException {
-        String tagName = "beauty";
-        assertEquals(2, giftCertificateDao.readByTags(Collections.singletonList(new Tag(1))).size());
+    void readByTags() throws DaoException {
+        Tag tag = new Tag(1);
+
+        assertEquals(2, giftCertificateDao.readByTags(Collections.singletonList(tag)).size());
     }
 
     @Test
     void readException() {
         int notExistingId = 100;
+
         assertThrows(DaoException.class, () -> giftCertificateDao.read(notExistingId));
     }
 
     @Test
     void createException() {
         GiftCertificate emptyCertificate = new GiftCertificate();
+
         assertThrows(DaoException.class, () -> giftCertificateDao.create(emptyCertificate));
     }
 
@@ -107,6 +104,7 @@ class GiftCertificateDaoImplTest {
     void update() throws DaoException {
         int id = 1;
         GiftCertificate giftCertificate = giftCertificateDao.read(id);
+        assert giftCertificate != null;
         giftCertificate.setName("New name");
         giftCertificate.setDescription("New description");
         giftCertificate.setPrice(BigDecimal.ONE);
@@ -115,10 +113,11 @@ class GiftCertificateDaoImplTest {
         giftCertificate.setLastUpdateDate(localDateTime);
 
         giftCertificateDao.update(giftCertificate);
-
         GiftCertificate actual = giftCertificateDao.read(id);
+
         assertAll("GiftCertificates should be equal except last_update_date field",
                 () -> {
+                    assertNotNull(actual);
                     assertEquals(giftCertificate.getName(), actual.getName());
                     assertEquals(giftCertificate.getDescription(), actual.getDescription());
                     assertEquals(0, giftCertificate.getPrice().compareTo(actual.getPrice()));
@@ -135,6 +134,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate();
         int id = 1;
         giftCertificate.setId(id);
+
         assertThrows(DaoException.class, () -> giftCertificateDao.update(giftCertificate));
     }
 
@@ -144,11 +144,14 @@ class GiftCertificateDaoImplTest {
         giftCertificateDao.delete(id);
         GiftCertificate actual = giftCertificateDao.read(id);
 
-        assertFalse(actual.getIsActive());
+        assertAll(() -> {
+            assertNotNull(actual);
+            assertFalse(actual.getIsActive());
+        });
     }
 
     @Test
-    void testReadAll() throws DaoException {
+    void testReadAll() {
         assertAll("Should read all lines",
                 () -> {
                     assertNotNull(giftCertificateDao.readAll());

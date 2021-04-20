@@ -47,14 +47,16 @@ class GiftCertificateServiceImplTest {
         int id = 3;
         given(dao.read(id)).willReturn(new GiftCertificate(id));
         GiftCertificate certificate = service.findById(id);
-        assertEquals(id, certificate.getId());
 
+        assertEquals(id, certificate.getId());
     }
 
     @Test
     void findByIdException() throws DaoException {
         given(dao.read(anyInt())).willThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> service.findById(anyInt()));
+        Integer id = anyInt();
+
+        assertThrows(ServiceException.class, () -> service.findById(id));
     }
 
     @Test
@@ -71,8 +73,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void findAllException() throws DaoException {
         given(dao.readAll()).willThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> service.findAll());
 
+        assertThrows(ServiceException.class, () -> service.findAll());
     }
 
     @ParameterizedTest
@@ -87,6 +89,7 @@ class GiftCertificateServiceImplTest {
         int id = 1;
         given(dao.create(giftCertificate)).willReturn(id);
         service.save(giftCertificate);
+
         assertAll(() -> {
             assertEquals(id, giftCertificate.getId());
             assertNotNull(giftCertificate.getCreateDate());
@@ -96,7 +99,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void saveException() throws DaoException {
         given(dao.create(any(GiftCertificate.class))).willThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> service.save(new GiftCertificate()));
+        GiftCertificate certificate = new GiftCertificate();
 
+        assertThrows(ServiceException.class, () -> service.save(certificate));
     }
 }

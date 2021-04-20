@@ -35,6 +35,7 @@ class TagFacadeImplTest {
     void getTag() {
         given(tagService.findById(anyInt())).willReturn(new Tag());
         JsonResult<Tag> jsonResult = tagFacade.getTag(anyInt());
+
         assertAll(() -> {
             assertEquals(1, jsonResult.getResult().size());
             assertTrue(jsonResult.isSuccess());
@@ -44,6 +45,7 @@ class TagFacadeImplTest {
     @Test
     void save() {
         JsonResult<Tag> jsonResult = tagFacade.save(new Tag());
+
         assertAll(() -> {
             assertEquals(1, jsonResult.getResult().size());
             assertTrue(jsonResult.isSuccess());
@@ -53,6 +55,7 @@ class TagFacadeImplTest {
     @Test
     void delete() {
         JsonResult<Tag> jsonResult = tagFacade.delete(anyInt());
+
         assertAll(() -> {
             assertNull(jsonResult.getResult());
             assertTrue(jsonResult.isSuccess());
@@ -63,6 +66,7 @@ class TagFacadeImplTest {
     void getAllTags() {
         given(tagService.findAll()).willReturn(new ArrayList<>());
         JsonResult<Tag> jsonResult = tagFacade.getAllTags();
+
         assertAll(() -> {
             assertNotNull(jsonResult.getResult());
             assertTrue(jsonResult.isSuccess());

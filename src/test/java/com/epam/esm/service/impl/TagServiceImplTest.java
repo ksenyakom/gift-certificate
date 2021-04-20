@@ -23,8 +23,10 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
+
     @Mock
     private TagDao tagDao;
+
     private TagService tagService;
 
     @BeforeEach
@@ -50,7 +52,9 @@ class TagServiceImplTest {
     @Test
     void findByIdException() throws DaoException {
         given(tagDao.read(anyInt())).willThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> tagService.findById(anyInt()));
+        Integer id = anyInt();
+
+        assertThrows(ServiceException.class, () -> tagService.findById(id));
     }
 
 
@@ -68,8 +72,8 @@ class TagServiceImplTest {
     @Test
     void findAllException() throws DaoException {
         given(tagDao.readAll()).willThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> tagService.findAll());
 
+        assertThrows(ServiceException.class, () -> tagService.findAll());
     }
 
     @Test
@@ -91,8 +95,9 @@ class TagServiceImplTest {
     @Test
     void saveException() throws DaoException {
         given(tagDao.create(any(Tag.class))).willThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> tagService.save(new Tag()));
+        Tag tag = new Tag();
 
+        assertThrows(ServiceException.class, () -> tagService.save(tag));
     }
 
 }
