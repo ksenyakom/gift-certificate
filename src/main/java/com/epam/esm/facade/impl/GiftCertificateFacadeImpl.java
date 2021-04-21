@@ -17,9 +17,10 @@ import java.util.List;
 
 @Component
 public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
-    @Autowired
+
     private final GiftCertificateService giftCertificateService;
 
+    @Autowired
     public GiftCertificateFacadeImpl(GiftCertificateService giftCertificateService) {
         this.giftCertificateService = giftCertificateService;
     }

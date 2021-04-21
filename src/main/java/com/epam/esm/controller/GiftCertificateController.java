@@ -26,7 +26,7 @@ public class GiftCertificateController {
 
     @Autowired
     @Qualifier("giftCertificateValidator")
-    private Validator validator;
+    private Validator giftCertificateValidator;
 
     @Autowired
     @Qualifier("searchGiftCertificateValidator")
@@ -46,7 +46,7 @@ public class GiftCertificateController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public JsonResult<GiftCertificate> create(@RequestBody GiftCertificate certificate, BindingResult result) {
-        validator.validate(certificate, result);
+        giftCertificateValidator.validate(certificate, result);
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "20");
         }
@@ -58,7 +58,7 @@ public class GiftCertificateController {
     public JsonResult<GiftCertificate> update(@RequestBody GiftCertificate certificate, BindingResult result,
                                               @PathVariable("id") int id) {
         certificate.setId(id);
-        validator.validate(certificate, result);
+        giftCertificateValidator.validate(certificate, result);
         if (result.hasErrors()) {
             throw new ServiceException(message(result), "20");
         }

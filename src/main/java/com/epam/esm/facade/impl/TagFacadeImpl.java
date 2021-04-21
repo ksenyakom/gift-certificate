@@ -12,9 +12,10 @@ import java.util.List;
 
 @Component
 public class TagFacadeImpl implements TagFacade {
-    @Autowired
-    TagService tagService;
 
+    private final TagService tagService;
+
+    @Autowired
     public TagFacadeImpl(TagService tagService) {
         this.tagService = tagService;
     }

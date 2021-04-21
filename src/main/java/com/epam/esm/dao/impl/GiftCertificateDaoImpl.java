@@ -29,9 +29,10 @@ import java.util.stream.Collectors;
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static Logger logger = LogManager.getLogger(GiftCertificateDaoImpl.class);
 
-    @Autowired
+
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
