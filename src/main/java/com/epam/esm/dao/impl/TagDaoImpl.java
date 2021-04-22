@@ -61,7 +61,7 @@ public class TagDaoImpl implements TagDao {
 
             return id;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not create new Tag. Name = " + entity.getName(), "11", e);
+            throw new DaoException(String.format("Can not create new Tag. Name = %s", entity.getName()), "11", e);
         }
     }
 
@@ -71,7 +71,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return jdbcTemplate.queryForObject(READ, new BeanPropertyRowMapper<>(Tag.class), id);
         } catch (DataAccessException e) {
-            throw new DaoException("Can not read Tag (id = " + id + ").", "12", e);
+            throw new DaoException(String.format("Can not read Tag (id = %s)", id), "12", e);
         }
     }
 
@@ -91,7 +91,7 @@ public class TagDaoImpl implements TagDao {
             jdbcTemplate.update(DELETE, id);
             logger.debug("Deleted tag with id={}", id);
         } catch (DataAccessException e) {
-            throw new DaoException("Can not delete Tag (id = " + id + ").", "14", e);
+            throw new DaoException(String.format("Can not delete Tag (id = %s)", id), "14", e);
         }
     }
 
@@ -121,7 +121,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return jdbcTemplate.query(READ_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tagName);
         } catch (DataAccessException e) {
-            throw new DaoException("No tags with name =" + tagName, "21", e);
+            throw new DaoException(String.format("No tags with name = %s)", tagName), "21", e);
         }
     }
 }

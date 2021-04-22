@@ -14,8 +14,7 @@ public class ExceptionInterceptor {
     private static Logger logger = LogManager.getLogger(ExceptionInterceptor.class);
 
     @ExceptionHandler(ServiceException.class)
-    public @ResponseBody
-    JsonResult<Entity> someError(final ServiceException e) {
+    public @ResponseBody JsonResult<Entity> someError(final ServiceException e) {
         logger.error("Error code:{}. Error message:{}", e.getErrorCode(), e.getMessage(), e.getCause());
         return new JsonResult.Builder<>()
                 .withSuccess(false)

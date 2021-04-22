@@ -65,7 +65,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             return certificateId;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not create new GiftCertificate. Name = " + certificate.getName(), "01", e);
+            throw new DaoException(String.format("Can not create new GiftCertificate. Name = %s ", certificate.getName()), "01", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             return certificate;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not read GiftCertificate (id = " + id + ").", "02", e);
+            throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", id), "02", e);
         }
     }
 
@@ -137,7 +137,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             return certificates;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not read certificates by tags (tag = " + tags.toString() + ").", "22", e);
+            throw new DaoException(String.format("Can not read certificates by tags (tag = %s)", tags.toString()), "22", e);
         }
     }
 
@@ -150,7 +150,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             return certificates;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not read certificates by name (name = " + name + ").", "23", e);
+            throw new DaoException(String.format("Can not read certificates by name (name = %s)", name), "23", e);
         }
     }
 
@@ -167,7 +167,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             return certificates;
         } catch (DataAccessException e) {
-            throw new DaoException("Can not read certificates by tags (tag = " + tags.toString() + ").", "22", e);
+            throw new DaoException("Can not read certificates by tags", "22", e);
         }
     }
 
@@ -178,7 +178,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             updateCertificateTags(certificate);
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (DataAccessException e) {
-            throw new DaoException("Can not update GiftCertificate (id = " + certificate.getId() + ").", "03", e);
+            throw new DaoException(String.format("Can not update GiftCertificate (id = %s)", certificate.getId()), "03", e);
         }
     }
 
@@ -188,7 +188,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             jdbcTemplate.update(DELETE, id);
             logger.debug("Certificate was deleted(isActive=false) with id={}", id);
         } catch (DataAccessException e) {
-            throw new DaoException("Can not delete GiftCertificate (id = " + id + ").", "04", e);
+            throw new DaoException(String.format("Can not delete GiftCertificate (id = %s)", id), "04", e);
         }
     }
 

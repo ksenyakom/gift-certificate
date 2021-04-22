@@ -6,6 +6,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,13 +23,17 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @ComponentScan("com.epam.esm")
 @EnableWebMvc
 @EnableTransactionManagement
+@PropertySource("classpath:config.properties")
 public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
+    private final Environment env;
+
     @Autowired
-    public SpringConfig(ApplicationContext applicationContext) {
+    public SpringConfig(ApplicationContext applicationContext, Environment env) {
         this.applicationContext = applicationContext;
+        this.env = env;
     }
 
     @Bean
@@ -56,13 +62,15 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Bean
     public BasicDataSource dataSource() {
+        int initialSize = 5;
+        int maxSize = 10;
         BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://localhost:3306/gift_db");
-        ds.setUsername("gift_user");
-        ds.setPassword("gift_password");
-        ds.setInitialSize(5);
-        ds.setMaxTotal(10);
+        ds.setDriverClassName(env.getProperty("driver"));
+        ds.setUrl(env.getProperty("db.url"));
+        ds.setUsername(env.getProperty("user"));
+        ds.setPassword(env.getProperty("password"));
+        ds.setInitialSize(initialSize);
+        ds.setMaxTotal(maxSize);
         return ds;
     }
 
