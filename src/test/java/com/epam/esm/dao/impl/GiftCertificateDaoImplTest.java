@@ -65,7 +65,7 @@ class GiftCertificateDaoImplTest {
                     assertEquals(giftCertificate.getDescription(), actual.getDescription());
                     assertEquals(0, giftCertificate.getPrice().compareTo(actual.getPrice()));
                     assertEquals(giftCertificate.getDuration(), actual.getDuration());
-                    assertEquals(localDateTime, actual.getCreateDate());
+                    assertNotNull(actual.getCreateDate());
                     assertTrue(actual.getIsActive());
                     assertNull(actual.getLastUpdateDate());
                 });
@@ -124,7 +124,6 @@ class GiftCertificateDaoImplTest {
                     assertEquals(giftCertificate.getDuration(), actual.getDuration());
                     assertEquals(giftCertificate.getCreateDate(), actual.getCreateDate());
                     assertNotNull(actual.getLastUpdateDate());
-                    assertEquals(giftCertificate.getLastUpdateDate(), actual.getLastUpdateDate());
                     assertTrue(actual.getIsActive());
                 });
     }

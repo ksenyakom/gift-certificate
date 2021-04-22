@@ -29,5 +29,6 @@ CREATE TABLE `certificate_tag`
         ON DELETE RESTRICT,
     CONSTRAINT FK_tag_id FOREIGN KEY (`tag_id`) REFERENCES tag (`id`)
         ON UPDATE CASCADE
-        ON DELETE RESTRICT
+        ON DELETE RESTRICT,
+    CONSTRAINT UC_certificate_tag UNIQUE (certificate_id, tag_id)
 );

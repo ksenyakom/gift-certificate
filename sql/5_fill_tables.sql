@@ -1,6 +1,5 @@
 USE `gift_db`;
 
-
 insert into `tag`
 (`id`, `name`)
 values
@@ -10,13 +9,12 @@ values
 (4, "sport"),
 (5, "relax");
 
-
 insert into `gift_certificate`
 (`id`, `name`, `description`, `price`, `duration`, `create_date`,`is_active`)
 values
-(1, "Haircut" , "Any haircut with styling", 100, 30, "2021-03-30T18:31:42+03:30", true),
-(2, "Manicure", "Manicure with long-lasting cover", 20, 60, "2021-03-20T18:31:42+03:30",true),
-(3, "Swimming pool", "Visiting swimming pool with sauna", 15, 10, "2021-03-15T18:31:42+03:30",true);
+(1, "Haircut" , "Any haircut with styling", 100, 30, "2021-03-30T18:31:42", true),
+(2, "Manicure", "Manicure with long-lasting cover", 20, 60, "2021-03-20T18:31:42",true),
+(3, "Swimming pool", "Visiting swimming pool with sauna", 15, 10, "2021-03-15T18:31:42",true);
 
 insert into `certificate_tag`
 (`id`, `certificate_id`, `tag_id`)
