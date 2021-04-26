@@ -41,7 +41,7 @@ public interface GiftCertificateDao {
     void delete(@NotNull Integer id) throws DaoException;
 
     @NotNull
-    List<GiftCertificate> readAll() throws DaoException;
+    List<GiftCertificate> readAllActive() throws DaoException;
 
     /**
      * Reads GiftCertificates by tags.

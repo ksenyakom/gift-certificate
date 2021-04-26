@@ -49,11 +49,12 @@ public class TagFacadeImpl implements TagFacade {
     @Override
     public JsonResult<Tag> getAllTags() {
         List<Tag> tags = tagService.findAll();
+        String message = String.format("Found results: %s.", tags.size());
+
         return new JsonResult.Builder<Tag>()
                 .withSuccess(true)
                 .withResult(tags)
+                .withMessage(message)
                 .build();
-
-
     }
 }

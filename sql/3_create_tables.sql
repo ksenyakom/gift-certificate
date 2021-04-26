@@ -17,7 +17,8 @@ CREATE TABLE `tag`
 (
     `id`   INTEGER      NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    CONSTRAINT PK_tag PRIMARY KEY (`id`)
+    CONSTRAINT PK_tag PRIMARY KEY (`id`),
+    CONSTRAINT UC_tag UNIQUE (name)
 );
 
 CREATE TABLE `certificate_tag`

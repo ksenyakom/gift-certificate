@@ -49,7 +49,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @NotNull
     public List<GiftCertificate> findAll() throws ServiceException {
         try {
-            List<GiftCertificate> certificates = giftCertificateDao.readAll();
+            List<GiftCertificate> certificates = giftCertificateDao.readAllActive();
             readTagNames(certificates);
             return certificates;
         } catch (DaoException e) {
@@ -61,11 +61,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void save(@NotNull GiftCertificate certificate) throws ServiceException {
         try {
-            checkForNewTags(certificate.getTags());
+            createTagIfNotExist(certificate.getTags());
             if (certificate.getId() == null) {
                 certificate.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
                 certificate.setIsActive(true);
+
                 certificate.setId(giftCertificateDao.create(certificate));
+                readTagName(certificate.getTags());
             } else {
                 certificate.setLastUpdateDate(LocalDateTime.now(ZoneOffset.UTC));
                 giftCertificateDao.update(certificate);
@@ -75,13 +77,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
-    private void checkForNewTags(List<Tag> tags) throws DaoException {
+    private void createTagIfNotExist(List<Tag> tags) throws DaoException {
         if (tags != null) {
             for (Tag tag : tags) {
                 if (tag.getId() == null) {
-                    tag.setId(tagDao.create(tag));
+                    readOrCreate(tag);
                 }
             }
+        }
+    }
+
+    private void readOrCreate(Tag tag) throws DaoException {
+        if (tagDao.checkIfExist(tag.getName())) {
+            tagDao.readIdByName(tag);
+        } else {
+            tag.setId(tagDao.create(tag));
         }
     }
 
@@ -99,7 +109,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @NotNull
     public List<GiftCertificate> findByTagName(@NotNull String tagName) {
         try {
-            List<Tag> tags = tagDao.readByName(tagName);
+            List<Tag> tags = tagDao.readByPartName(tagName);
             List<GiftCertificate> certificates = giftCertificateDao.readByTags(tags);
             readTagNames(certificates);
             return certificates;
@@ -124,7 +134,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @NotNull
     public List<GiftCertificate> findByNameAndTagName(@NotNull String name, @NotNull String tagName) {
         try {
-            List<Tag> tags = tagDao.readByName(tagName);
+            List<Tag> tags = tagDao.readByPartName(tagName);
             List<GiftCertificate> certificates = giftCertificateDao.readByNameAndTagName(name, tags);
             readTagNames(certificates);
             return certificates;
@@ -136,7 +146,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private void readTagName(List<Tag> tags) throws DaoException {
         if (tags != null) {
             for (Tag tag : tags) {
-                tagDao.read(tag);
+                if (tag.getName() == null) {
+                    tagDao.read(tag);
+                }
             }
         }
     }

@@ -40,8 +40,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String CREATE = "INSERT INTO gift_certificate (name, description, price, duration, create_date, is_active) values(?,?,?,?,?,?)";
     private static final String READ = "SELECT * FROM gift_certificate WHERE id = ?";
     private static final String UPDATE = "UPDATE gift_certificate SET name = ?, description = ?,price = ?, duration = ?, last_update_date = ? WHERE id = ?";
-    private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ?";
-    private static final String READ_ALL = "SELECT * FROM gift_certificate";
+    private static final String DELETE = "UPDATE gift_certificate SET is_active = false WHERE id = ? AND is_active = true";
+    private static final String READ_ALL_ACTIVE = "SELECT * FROM gift_certificate  WHERE is_active = true";
     private static final String READ_BY_NAME = "SELECT * FROM gift_certificate WHERE name LIKE CONCAT('%', ?, '%')";
 
     private static final String READ_BY_TAG_ID = "SELECT name, description, price, duration, create_date,  last_update_date, is_active, certificate_id as id FROM gift_certificate `c` join `certificate_tag` `t` on c.id = t.certificate_id  WHERE t.tag_id = ?";
@@ -100,10 +100,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Nullable
     public GiftCertificate read(@NonNull Integer id) throws DaoException {
         try {
-            GiftCertificate certificate = jdbcTemplate.queryForObject(READ, ROW_MAPPER, id);
-            readTagsForCertificate(certificate);
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ, ROW_MAPPER, id);
+            if (certificates.isEmpty()) {
+                throw new DaoException(String.format("GiftCertificate with id = %s not found.", id), "404");
+            }
+            readTagsForCertificate(certificates.get(0));
 
-            return certificate;
+            return certificates.get(0);
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not read GiftCertificate (id = %s).", id), "02", e);
         }
@@ -111,12 +114,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     @NonNull
-    public List<GiftCertificate> readAll() throws DaoException {
+    public List<GiftCertificate> readAllActive() throws DaoException {
         try {
-            List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL, ROW_MAPPER);
-            if (!certificates.isEmpty()) {
-                readTagsForCertificate(certificates);
+            List<GiftCertificate> certificates = jdbcTemplate.query(READ_ALL_ACTIVE, ROW_MAPPER);
+            if (certificates.isEmpty()) {
+                throw new DaoException("No GiftCertificate found in database", "404");
             }
+            readTagsForCertificate(certificates);
 
             return certificates;
         } catch (DataAccessException e) {
@@ -174,7 +178,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void update(@NonNull GiftCertificate certificate) throws DaoException {
         try {
-            jdbcTemplate.update(UPDATE, certificate.getName(), certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(), certificate.getId());
+            int rowsEffected = jdbcTemplate.update(UPDATE, certificate.getName(), certificate.getDescription(), certificate.getPrice(), certificate.getDuration(), certificate.getLastUpdateDate(), certificate.getId());
+            if (rowsEffected == 0) {
+                throw new DaoException(String.format("GiftCertificate with id = %s not found.", certificate.getId()), "404");
+            }
             updateCertificateTags(certificate);
             logger.debug("Certificate was updated with id={}", certificate.getId());
         } catch (DataAccessException e) {
@@ -185,53 +192,78 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void delete(@NonNull Integer id) throws DaoException {
         try {
-            jdbcTemplate.update(DELETE, id);
+            int rowsEffected = jdbcTemplate.update(DELETE, id);
+            if (rowsEffected == 0) {
+                throw new DaoException(String.format("GiftCertificate with id = %s not found or not active.", id), "404");
+            }
             logger.debug("Certificate was deleted(isActive=false) with id={}", id);
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not delete GiftCertificate (id = %s)", id), "04", e);
         }
     }
 
-    private void readTagsForCertificate(@Nullable List<GiftCertificate> certificates) {
+    private void readTagsForCertificate(@Nullable List<GiftCertificate> certificates) throws DaoException {
         if (certificates != null) {
             Map<Integer, Tag> tagMap = new HashMap<>();
             Tag tag;
             List<Tag> tags;
 
             for (GiftCertificate certificate : certificates) {
-                List<Integer> tagsId = jdbcTemplate.queryForList(READ_TAG_BY_CERTIFICATE, Integer.class, certificate.getId());
-                tags = new ArrayList<>();
+                try {
+                    List<Integer> tagsId = jdbcTemplate.queryForList(READ_TAG_BY_CERTIFICATE, Integer.class, certificate.getId());
+                    tags = new ArrayList<>();
+                    certificate.setTags(tags);
+
+                    for (Integer id : tagsId) {
+                        tag = tagMap.merge(id, new Tag(id), (oldValue, newValue) -> oldValue);
+                        tags.add(tag);
+                    }
+                } catch (DataAccessException e) {
+                    throw new DaoException(String.format("Can not read tags id for GiftCertificate (id = %s)", certificate.getId()), "25", e);
+                }
+            }
+        }
+    }
+
+    private void readTagsForCertificate(@Nullable GiftCertificate certificate) throws DaoException {
+        try {
+            if (certificate != null) {
+                List<Tag> tags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
                 certificate.setTags(tags);
-                for (Integer id : tagsId) {
-                    tag = tagMap.merge(id, new Tag(id), (oldValue, newValue) -> oldValue);
-                    tags.add(tag);
-                }
+            }
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not read list of tagId for GiftCertificate (id = %s)", certificate.getId()), "25", e);
+        }
+    }
+
+    private void updateCertificateTags(@NonNull GiftCertificate certificate) throws DaoException {
+        try {
+            if (certificate.getTags() != null) {
+                List<Tag> newTagList = certificate.getTags();
+                List<Tag> existingTags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
+                List<Tag> tagsToDelete = existingTags.stream().filter(tag -> !newTagList.contains(tag)).collect(Collectors.toList());
+                List<Tag> tagsToAdd = newTagList.stream().filter(tag -> !existingTags.contains(tag)).collect(Collectors.toList());
+
+                deleteCertificateTag(tagsToDelete, certificate.getId());
+                addCertificateTag(tagsToAdd, certificate.getId());
+            }
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not update list of tagId for GiftCertificate (id = %s)", certificate.getId()), "26", e);
+        }
+    }
+
+    private void deleteCertificateTag(List<Tag> tagsToDelete, int certificateId) {
+        if (!tagsToDelete.isEmpty()) {
+            for (Tag tag : tagsToDelete) {
+                jdbcTemplate.update(DELETE_CERTIFICATE_TAG, certificateId, tag.getId());
             }
         }
     }
 
-    private void readTagsForCertificate(@Nullable GiftCertificate certificate) {
-        if (certificate != null) {
-            List<Tag> tags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
-            certificate.setTags(tags);
-        }
-    }
-
-    private void updateCertificateTags(@NonNull GiftCertificate certificate) {
-        if (certificate.getTags() != null) {
-            List<Tag> newTagList = certificate.getTags();
-            List<Tag> existingTags = jdbcTemplate.query(READ_TAG_BY_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class), certificate.getId());
-            List<Tag> tagsToDelete = existingTags.stream().filter(tag -> !newTagList.contains(tag)).collect(Collectors.toList());
-            List<Tag> tagsToAdd = newTagList.stream().filter(tag -> !existingTags.contains(tag)).collect(Collectors.toList());
-            if (!tagsToDelete.isEmpty()) {
-                for (Tag tag : tagsToDelete) {
-                    jdbcTemplate.update(DELETE_CERTIFICATE_TAG, certificate.getId(), tag.getId());
-                }
-            }
-            if (!tagsToAdd.isEmpty()) {
-                for (Tag tag : tagsToAdd) {
-                    jdbcTemplate.update(ADD_CERTIFICATE_TAG, certificate.getId(), tag.getId());
-                }
+    private void addCertificateTag(List<Tag> tagsToAdd, int certificateId) {
+        if (!tagsToAdd.isEmpty()) {
+            for (Tag tag : tagsToAdd) {
+                jdbcTemplate.update(ADD_CERTIFICATE_TAG, certificateId, tag.getId());
             }
         }
     }

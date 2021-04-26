@@ -12,6 +12,10 @@ public class Tag extends Entity {
     public Tag() {
     }
 
+    public Tag(String name) {
+        this.name = name;
+    }
+
     public Tag(Integer id, String name) {
         super(id);
         this.name = name;

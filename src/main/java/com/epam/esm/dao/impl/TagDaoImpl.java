@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -34,11 +36,13 @@ public class TagDaoImpl implements TagDao {
 
     private static final String CREATE = "INSERT INTO tag (name) values(?)";
     private static final String READ = "SELECT * FROM tag WHERE id = ?";
-    private static final String READ_BY_NAME = "SELECT * FROM tag WHERE name  LIKE CONCAT('%', ?, '%')";
+    private static final String READ_BY_PART_NAME = "SELECT * FROM tag WHERE name  LIKE CONCAT('%', ?, '%')";
     private static final String READ_NAME = "SELECT name FROM tag WHERE id = ?";
     private static final String DELETE = "DELETE FROM tag WHERE id = ?";
     private static final String READ_ALL = "SELECT * FROM tag";
     private static final String READ_CERTIFICATES_BY_TAG = "SELECT * FROM certificate_tag where tag_id = ?";
+    private static final String CHECK_IF_EXIST = "SELECT 1 FROM tag WHERE name=?";
+    private static final String READ_BY_NAME = "SELECT id FROM tag WHERE name=?";
 
     @Override
     @NotNull
@@ -66,10 +70,38 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
+    public boolean checkIfExist(String name) throws DaoException {
+        try {
+            jdbcTemplate.queryForObject(CHECK_IF_EXIST, Integer.class, name);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not check if tag with name = %s exist", name), "19", e);
+        }
+    }
+
+    @Override
+    public void readIdByName(Tag tag) throws DaoException {
+        try {
+            List<Integer> result = jdbcTemplate.query(READ_BY_NAME, new BeanPropertyRowMapper<>(Integer.class), tag.getName());
+            if (!result.isEmpty()) {
+                tag.setId(result.get(0));
+            }
+        } catch (DataAccessException e) {
+            throw new DaoException(String.format("Can not check if tag with name = %s exist", tag.getName()), "19", e);
+        }
+    }
+
+    @Override
     @Nullable
     public Tag read(@NotNull Integer id) throws DaoException {
         try {
-            return jdbcTemplate.queryForObject(READ, new BeanPropertyRowMapper<>(Tag.class), id);
+            List<Tag> tags = jdbcTemplate.query(READ, new BeanPropertyRowMapper<>(Tag.class), id);
+            if (tags.isEmpty()) {
+                throw new DaoException(String.format("Tag with id = %s not found.", id), "404");
+            }
+            return tags.get(0);
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not read Tag (id = %s)", id), "12", e);
         }
@@ -80,15 +112,21 @@ public class TagDaoImpl implements TagDao {
         try {
             String name = jdbcTemplate.queryForObject(READ_NAME, String.class, tag.getId());
             tag.setName(name);
+        } catch (IncorrectResultSizeDataAccessException e1) {
+            throw new DaoException(String.format("Tag with id = %s not found.", tag.getId()), "404");
         } catch (DataAccessException e) {
             throw new DaoException("Can not read Tag name (id = " + tag.getId() + ").", "17", e);
         }
+
     }
 
     @Override
     public void delete(@NotNull Integer id) throws DaoException {
         try {
-            jdbcTemplate.update(DELETE, id);
+            int rowsEffected = jdbcTemplate.update(DELETE, id);
+            if (rowsEffected == 0) {
+                throw new DaoException(String.format("Tag with id = %s not found or already deleted.", id), "404");
+            }
             logger.debug("Deleted tag with id={}", id);
         } catch (DataAccessException e) {
             throw new DaoException(String.format("Can not delete Tag (id = %s)", id), "14", e);
@@ -99,7 +137,11 @@ public class TagDaoImpl implements TagDao {
     @Nullable
     public List<Tag> readAll() throws DaoException {
         try {
-            return jdbcTemplate.query(READ_ALL, new BeanPropertyRowMapper<>(Tag.class));
+            List<Tag> tags = jdbcTemplate.query(READ_ALL, new BeanPropertyRowMapper<>(Tag.class));
+            if (tags.isEmpty()) {
+                throw new DaoException("No tags found in database", "404");
+            }
+            return tags;
         } catch (DataAccessException e) {
             throw new DaoException("Can not read all Tag", "15", e);
         }
@@ -117,9 +159,9 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     @Nullable
-    public List<Tag> readByName(@NotNull String tagName) throws DaoException {
+    public List<Tag> readByPartName(@NotNull String tagName) throws DaoException {
         try {
-            return jdbcTemplate.query(READ_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tagName);
+            return jdbcTemplate.query(READ_BY_PART_NAME, new BeanPropertyRowMapper<>(Tag.class), tagName);
         } catch (DataAccessException e) {
             throw new DaoException(String.format("No tags with name = %s)", tagName), "21", e);
         }

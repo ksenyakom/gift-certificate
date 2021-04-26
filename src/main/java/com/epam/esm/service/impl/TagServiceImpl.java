@@ -38,9 +38,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void save(Tag entity) throws ServiceException {
+    public void save(Tag tag) throws ServiceException {
         try {
-            entity.setId(tagDao.create(entity));
+            if (tagDao.checkIfExist(tag.getName())) {
+                throw new ServiceException(String.format("Tag with name = %s already exist", tag.getName()), "19");
+            }
+            tag.setId(tagDao.create(tag));
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e.getErrorCode(), e.getCause());
         }

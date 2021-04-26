@@ -4,9 +4,7 @@ import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -22,6 +20,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class GiftCertificateDaoImplTest {
     private static EmbeddedDatabase embeddedDatabase;
 
@@ -137,6 +136,7 @@ class GiftCertificateDaoImplTest {
         assertThrows(DaoException.class, () -> giftCertificateDao.update(giftCertificate));
     }
 
+    @Order(2)
     @Test
     void delete() throws DaoException {
         int id = 2;
@@ -149,12 +149,13 @@ class GiftCertificateDaoImplTest {
         });
     }
 
+    @Order(1)
     @Test
     void testReadAll() {
         assertAll("Should read all lines",
                 () -> {
-                    assertNotNull(giftCertificateDao.readAll());
-                    assertEquals(3, giftCertificateDao.readAll().size());
+                    assertNotNull(giftCertificateDao.readAllActive());
+                    assertEquals(3, giftCertificateDao.readAllActive().size());
                 });
     }
 }

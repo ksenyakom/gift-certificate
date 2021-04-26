@@ -12,6 +12,10 @@ public interface TagDao {
 
     Integer create(Tag tag) throws DaoException;
 
+    boolean checkIfExist(String name) throws DaoException;
+
+    void readIdByName(Tag tag) throws DaoException;
+
     Tag read(Integer id) throws DaoException;
 
     void read(Tag tag) throws DaoException;
@@ -29,5 +33,5 @@ public interface TagDao {
      * @return - list of found tags.
      * @throws DaoException if any exception occur while receiving data.
      */
-    List<Tag> readByName(String tagName) throws DaoException;
+    List<Tag> readByPartName(String tagName) throws DaoException;
 }

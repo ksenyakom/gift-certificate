@@ -58,9 +58,13 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     public JsonResult<GiftCertificate> search(@Nullable String name, @Nullable String tagName) {
         SearchByNameAndTagName searchCertificate = new SearchByNameAndTagName(name, tagName);
         List<GiftCertificate> certificateList = searchCertificate.search(giftCertificateService);
+        String massage = certificateList.isEmpty()
+                ? "No GiftCertificates found for search parameters."
+                : String.format("Found results: %s.", certificateList.size());
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
                 .withResult(certificateList)
+                .withMessage(massage)
                 .build();
     }
 
@@ -74,8 +78,10 @@ public class GiftCertificateFacadeImpl implements GiftCertificateFacade {
     @NonNull
     public JsonResult<GiftCertificate> getAllCertificates() {
         List<GiftCertificate> certificates = giftCertificateService.findAll();
+        String message = String.format("Found results: %s.",certificates.size());
         return new JsonResult.Builder<GiftCertificate>()
                 .withSuccess(true)
+                .withMessage(message)
                 .withResult(certificates)
                 .build();
     }

@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.DaoException;
-import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.GiftCertificate;
 import com.epam.esm.model.Tag;
@@ -89,7 +88,13 @@ class TagDaoImplTest {
     @Test
     void readByName() throws DaoException {
         String tagName = "care";
-        List<Tag> tags = tagDao.readByName(tagName);
+        List<Tag> tags = tagDao.readByPartName(tagName);
         assertEquals(2, tags.size());
+    }
+
+    @Test
+    void checkIfExist() throws DaoException {
+        assertTrue(tagDao.checkIfExist("beauty"));
+        assertFalse(tagDao.checkIfExist("not exist"));
     }
 }

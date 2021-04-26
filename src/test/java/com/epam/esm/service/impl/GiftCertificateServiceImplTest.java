@@ -4,10 +4,8 @@ import com.epam.esm.dao.DaoException;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.model.GiftCertificate;
-import com.epam.esm.model.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.ServiceException;
-import com.epam.esm.service.TagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +60,7 @@ class GiftCertificateServiceImplTest {
         List<GiftCertificate> certificates = new ArrayList<>();
         certificates.add(new GiftCertificate());
         certificates.add(new GiftCertificate());
-        given(dao.readAll()).willReturn(certificates);
+        given(dao.readAllActive()).willReturn(certificates);
         List<GiftCertificate> actual = service.findAll();
 
         assertEquals(2, actual.size());
@@ -72,7 +68,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findAllException() throws DaoException {
-        given(dao.readAll()).willThrow(DaoException.class);
+        given(dao.readAllActive()).willThrow(DaoException.class);
 
         assertThrows(ServiceException.class, () -> service.findAll());
     }

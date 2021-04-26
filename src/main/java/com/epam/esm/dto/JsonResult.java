@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class JsonResult<T extends Entity> {
     private boolean success;
-    private String status;
+    private String errorCode;
     private String message;
     private List<T> result;
 
@@ -35,12 +35,12 @@ public class JsonResult<T extends Entity> {
         this.result = result;
     }
 
-    public String getStatus() {
-        return status;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     public String getMessage() {
@@ -63,8 +63,8 @@ public class JsonResult<T extends Entity> {
             return this;
         }
 
-        public Builder<T> withStatus(String status) {
-            jsonResult.status = status;
+        public Builder<T> withErrorCode(String status) {
+            jsonResult.errorCode = status;
             return this;
         }
 
